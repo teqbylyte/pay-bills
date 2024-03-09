@@ -9,14 +9,14 @@ import (
 )
 
 func Dashboard(c echo.Context) error {
-	transactions := make([]models.Transactions, 0)
+	users := make([]models.User, 0)
 
-	err := query.Transactions.
-		Scan(&transactions)
+	err := query.User.
+		Scan(&users)
 
 	if err != nil {
 		fmt.Println("Transaction Error: ", err)
 	}
 
-	return c.JSON(http.StatusOK, transactions)
+	return c.JSON(http.StatusOK, users)
 }

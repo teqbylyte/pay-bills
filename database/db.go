@@ -7,7 +7,7 @@ import (
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"log"
-	model2 "martpay/app/models"
+	"martpay/app/models"
 	"martpay/database/query"
 )
 
@@ -32,15 +32,25 @@ func Connect() {
 
 	g.UseDB(Db)
 
-	g.ApplyBasic(&model2.Transactions{})
+	g.ApplyBasic(&models.Fee{},
+		&models.GeneralLedger{},
+		&models.GlTransaction{},
+		&models.KycLevel{},
+		&models.Loan{},
+		&models.Service{},
+		&models.ServiceProvider{},
+		&models.Terminal{},
+		&models.TerminalGroup{},
+		&models.Transactions{},
+		&models.User{},
+		&models.Wallet{},
+		&models.WalletTransaction{},
+	)
 
 	query.SetDefault(Db)
 
 	// Generate the code
-	//g.Execute()
-
-	//database.runMigration(db)
-	//database.runSeeder()
+	g.Execute()
 }
 
 func mysqlDsn() string {
