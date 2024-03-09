@@ -5,14 +5,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	config "martpay/app"
-	db "martpay/database"
+	"martpay/database"
 	"martpay/routes"
 )
 
 func init() {
 	config.Setup()
 
-	db.Connect()
+	database.Connect()
 }
 
 func main() {

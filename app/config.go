@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Setup - Set up the configuration variables and timezone
+// Setup - Set up the configuration/environment variables and timezone
 func Setup() {
 	configureTimezone()
 

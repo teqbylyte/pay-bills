@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 
 var Db *gorm.DB
 
-// Connect - Initialize database connection
+// Connect - Configure and open the database connection
 func Connect() {
 	var err error
 
@@ -50,7 +50,7 @@ func Connect() {
 	query.SetDefault(Db)
 
 	// Generate the code
-	g.Execute()
+	//g.Execute()
 }
 
 func mysqlDsn() string {
