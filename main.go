@@ -4,37 +4,15 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-	"log"
+	config "martpay/app"
+	db "martpay/database"
 	"martpay/routes"
-	"os"
-	"time"
 )
 
 func init() {
-	_ = os.Setenv("TZ", "Africa/Lagos")
-	location, err := time.LoadLocation("Africa/Lagos")
-	if err != nil {
-		fmt.Printf("Err loading location: %v\n", err)
-	}
-	time.Local = location
+	config.Setup()
 
-	//homeDir, _ := os.UserHomeDir()
-	viper.SetConfigType("toml")
-	viper.SetConfigName(".martpay")
-
-	//viper.AddConfigPath(fmt.Sprintf("%s/prod/martpay", homeDir))
-	viper.AddConfigPath("./")
-
-	// Find and read the config file
-	err = viper.ReadInConfig()
-	fmt.Println(err)
-
-	if err != nil {
-		log.Fatalf("Error while reading config file %s", err)
-	}
-
-	// Init Database
-	//database.Database{}.Init()
+	db.Connect()
 }
 
 func main() {
