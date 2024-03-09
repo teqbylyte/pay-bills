@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"log"
+	"martpay/routes"
 	"os"
 	"time"
 )
@@ -38,6 +39,8 @@ func init() {
 
 func main() {
 	e := echo.New()
+
+	routes.Api(e)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%d", viper.GetString("APP_HOST"), viper.GetInt("APP_PORT"))))
 }
