@@ -3,9 +3,12 @@ package db
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/gen"
 	"gorm.io/gorm"
 	"log"
+	model2 "martpay/app/models"
+	"martpay/database/query"
 )
 
 var Db *gorm.DB
@@ -13,12 +16,13 @@ var Db *gorm.DB
 // Connect - Initialize database connection
 func Connect() {
 	var err error
-	/*g := gen.NewGenerator(gen.Config{
+
+	g := gen.NewGenerator(gen.Config{
 		OutPath: "./database/query",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
-	})*/
+	})
 
-	Db, err = gorm.Open(mysql.Open(getDsn()), &gorm.Config{})
+	Db, err = gorm.Open(postgres.Open(postgresDsn()), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Database Connection Error", err)
@@ -26,9 +30,11 @@ func Connect() {
 
 	fmt.Println("Database Connected")
 
-	//g.UseDB(Db)
+	g.UseDB(Db)
 
-	//g.ApplyBasic(model)
+	g.ApplyBasic(&model2.Transactions{})
+
+	query.SetDefault(Db)
 
 	// Generate the code
 	//g.Execute()
@@ -37,8 +43,7 @@ func Connect() {
 	//database.runSeeder()
 }
 
-// Get database config string from env
-func getDsn() string {
+func mysqlDsn() string {
 	host := viper.GetString("DB_HOST")
 	user := viper.GetString("DB_USER")
 	password := viper.GetString("DB_PASS")
@@ -46,6 +51,18 @@ func getDsn() string {
 	port := viper.GetString("DB_PORT")
 
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, dbname)
+}
+
+func postgresDsn() string {
+	host := viper.GetString("DB_HOST")
+	user := viper.GetString("DB_USER")
+	password := viper.GetString("DB_PASS")
+	dbname := viper.GetString("DB_NAME")
+	port := viper.GetString("DB_PORT")
+	ssl := viper.GetString("DB_SSL")
+	timezone := viper.GetString("DB_TIMEZONE")
+
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", host, user, password, dbname, port, ssl, timezone)
 }
 
 /*func (database Database) runMigration(gormDB *gorm.DB) {

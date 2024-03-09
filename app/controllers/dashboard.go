@@ -1,17 +1,22 @@
 package ctrl
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"martpay/app/models"
-	"martpay/database"
+	"martpay/database/query"
 	"net/http"
 )
 
 func Dashboard(c echo.Context) error {
-	var transactions []models.Transactions
-	db.Db.Find(&transactions)
+	transactions := make([]models.Transactions, 0)
 
-	//transaction, _ := query.Transactions.First()
+	err := query.Transactions.
+		Scan(&transactions)
+
+	if err != nil {
+		fmt.Println("Transaction Error: ", err)
+	}
 
 	return c.JSON(http.StatusOK, transactions)
 }
