@@ -37,6 +37,11 @@ func newWallet(db *gorm.DB, opts ...gen.DOOption) wallet {
 	_wallet.Status = field.NewString(tableName, "status")
 	_wallet.DisableDebit = field.NewBool(tableName, "disable_debit")
 	_wallet.Meta = field.NewField(tableName, "meta")
+	_wallet.User = walletBelongsToUser{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("User", "models.User"),
+	}
 
 	_wallet.fillFieldMap()
 
@@ -58,6 +63,7 @@ type wallet struct {
 	Status        field.String
 	DisableDebit  field.Bool
 	Meta          field.Field
+	User          walletBelongsToUser
 
 	fieldMap map[string]field.Expr
 }
@@ -101,7 +107,7 @@ func (w *wallet) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (w *wallet) fillFieldMap() {
-	w.fieldMap = make(map[string]field.Expr, 11)
+	w.fieldMap = make(map[string]field.Expr, 12)
 	w.fieldMap["id"] = w.ID
 	w.fieldMap["created_at"] = w.CreatedAt
 	w.fieldMap["updated_at"] = w.UpdatedAt
@@ -113,6 +119,7 @@ func (w *wallet) fillFieldMap() {
 	w.fieldMap["status"] = w.Status
 	w.fieldMap["disable_debit"] = w.DisableDebit
 	w.fieldMap["meta"] = w.Meta
+
 }
 
 func (w wallet) clone(db *gorm.DB) wallet {
@@ -123,6 +130,77 @@ func (w wallet) clone(db *gorm.DB) wallet {
 func (w wallet) replaceDB(db *gorm.DB) wallet {
 	w.walletDo.ReplaceDB(db)
 	return w
+}
+
+type walletBelongsToUser struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a walletBelongsToUser) Where(conds ...field.Expr) *walletBelongsToUser {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a walletBelongsToUser) WithContext(ctx context.Context) *walletBelongsToUser {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a walletBelongsToUser) Session(session *gorm.Session) *walletBelongsToUser {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a walletBelongsToUser) Model(m *models.Wallet) *walletBelongsToUserTx {
+	return &walletBelongsToUserTx{a.db.Model(m).Association(a.Name())}
+}
+
+type walletBelongsToUserTx struct{ tx *gorm.Association }
+
+func (a walletBelongsToUserTx) Find() (result *models.User, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a walletBelongsToUserTx) Append(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a walletBelongsToUserTx) Replace(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a walletBelongsToUserTx) Delete(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a walletBelongsToUserTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a walletBelongsToUserTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type walletDo struct{ gen.DO }

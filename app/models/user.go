@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -27,4 +28,8 @@ type User struct {
 	EmailVerifiedAt time.Time      `json:"email_verified_at"`
 	Password        string         `json:"password" gorm:"not null"`
 	DeletedAt       gorm.DeletedAt `json:"deleted_at"`
+}
+
+func (u User) Name() string {
+	return fmt.Sprintf("%s %s", u.FirstName, u.OtherNames)
 }

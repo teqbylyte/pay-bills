@@ -4,7 +4,7 @@ import "gorm.io/datatypes"
 
 type Loan struct {
 	BaseModel
-	UserId        uint           `json:"user_id" gorm:"not null"`
+	BelongsToUser
 	TransactionId uint           `json:"transaction_id" gorm:"not null"`
 	Amount        float64        `json:"amount" gorm:"not null"`
 	Charge        float64        `json:"charge" gorm:"default:0.0"`

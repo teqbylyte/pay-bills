@@ -2,7 +2,7 @@ package models
 
 type Terminal struct {
 	BaseModel
-	UserId        uint   `json:"user_id" gorm:"not null"`
+	BelongsToUser
 	GroupId       uint   `json:"group_id" gorm:"not null"`
 	Device        string `json:"device" gorm:"not null"`
 	Serial        string `json:"serial" gorm:"not null"`

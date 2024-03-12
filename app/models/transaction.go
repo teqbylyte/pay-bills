@@ -1,13 +1,10 @@
 package models
 
-import (
-	"gorm.io/datatypes"
-	"time"
-)
+import "gorm.io/datatypes"
 
 type Transactions struct {
-	ID             uint           `json:"id" gorm:"primaryKey"`
-	UserId         uint           `json:"user_id" gorm:"not null"`
+	BaseModel
+	BelongsToUser
 	TerminalId     uint           `json:"terminal_id" gorm:"not null"`
 	TypeId         uint           `json:"type_id" gorm:"not null"`
 	Amount         float64        `json:"amount" gorm:"not null"`
@@ -30,6 +27,4 @@ type Transactions struct {
 	WalletCredited bool           `json:"wallet_credited"`
 	Version        string         `json:"version"`
 	Device         string         `json:"device"`
-	CreatedAt      time.Time      `json:"created_at"`
-	UpdatedAt      time.Time      `json:"updated_at"`
 }

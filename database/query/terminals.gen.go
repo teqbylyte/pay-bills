@@ -49,6 +49,11 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 	_terminal.Pin = field.NewString(tableName, "pin")
 	_terminal.WrongPinCount = field.NewInt(tableName, "wrong_pin_count")
 	_terminal.HasChangedPin = field.NewBool(tableName, "has_changed_pin")
+	_terminal.User = terminalBelongsToUser{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("User", "models.User"),
+	}
 
 	_terminal.fillFieldMap()
 
@@ -82,6 +87,7 @@ type terminal struct {
 	Pin           field.String
 	WrongPinCount field.Int
 	HasChangedPin field.Bool
+	User          terminalBelongsToUser
 
 	fieldMap map[string]field.Expr
 }
@@ -137,7 +143,7 @@ func (t *terminal) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *terminal) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 23)
+	t.fieldMap = make(map[string]field.Expr, 24)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["created_at"] = t.CreatedAt
 	t.fieldMap["updated_at"] = t.UpdatedAt
@@ -161,6 +167,7 @@ func (t *terminal) fillFieldMap() {
 	t.fieldMap["pin"] = t.Pin
 	t.fieldMap["wrong_pin_count"] = t.WrongPinCount
 	t.fieldMap["has_changed_pin"] = t.HasChangedPin
+
 }
 
 func (t terminal) clone(db *gorm.DB) terminal {
@@ -171,6 +178,77 @@ func (t terminal) clone(db *gorm.DB) terminal {
 func (t terminal) replaceDB(db *gorm.DB) terminal {
 	t.terminalDo.ReplaceDB(db)
 	return t
+}
+
+type terminalBelongsToUser struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a terminalBelongsToUser) Where(conds ...field.Expr) *terminalBelongsToUser {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a terminalBelongsToUser) WithContext(ctx context.Context) *terminalBelongsToUser {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a terminalBelongsToUser) Session(session *gorm.Session) *terminalBelongsToUser {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a terminalBelongsToUser) Model(m *models.Terminal) *terminalBelongsToUserTx {
+	return &terminalBelongsToUserTx{a.db.Model(m).Association(a.Name())}
+}
+
+type terminalBelongsToUserTx struct{ tx *gorm.Association }
+
+func (a terminalBelongsToUserTx) Find() (result *models.User, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a terminalBelongsToUserTx) Append(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a terminalBelongsToUserTx) Replace(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a terminalBelongsToUserTx) Delete(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a terminalBelongsToUserTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a terminalBelongsToUserTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type terminalDo struct{ gen.DO }

@@ -4,8 +4,8 @@ import "gorm.io/datatypes"
 
 type Wallet struct {
 	BaseModel
-	Uwid          string         `json:"uwid" gorm:"not null"`
-	UserId        uint           `json:"user_id"`
+	Uwid string `json:"uwid" gorm:"not null"`
+	BelongsToUser
 	AccountNumber string         `json:"account_number"`
 	Balance       float64        `json:"balance"`
 	Commission    float64        `json:"commission"`

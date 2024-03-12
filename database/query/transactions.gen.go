@@ -27,6 +27,8 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	tableName := _transactions.transactionsDo.TableName()
 	_transactions.ALL = field.NewAsterisk(tableName)
 	_transactions.ID = field.NewUint(tableName, "id")
+	_transactions.CreatedAt = field.NewTime(tableName, "created_at")
+	_transactions.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_transactions.UserId = field.NewUint(tableName, "user_id")
 	_transactions.TerminalId = field.NewUint(tableName, "terminal_id")
 	_transactions.TypeId = field.NewUint(tableName, "type_id")
@@ -50,8 +52,11 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	_transactions.WalletCredited = field.NewBool(tableName, "wallet_credited")
 	_transactions.Version = field.NewString(tableName, "version")
 	_transactions.Device = field.NewString(tableName, "device")
-	_transactions.CreatedAt = field.NewTime(tableName, "created_at")
-	_transactions.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_transactions.User = transactionsBelongsToUser{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("User", "models.User"),
+	}
 
 	_transactions.fillFieldMap()
 
@@ -63,6 +68,8 @@ type transactions struct {
 
 	ALL            field.Asterisk
 	ID             field.Uint
+	CreatedAt      field.Time
+	UpdatedAt      field.Time
 	UserId         field.Uint
 	TerminalId     field.Uint
 	TypeId         field.Uint
@@ -86,8 +93,7 @@ type transactions struct {
 	WalletCredited field.Bool
 	Version        field.String
 	Device         field.String
-	CreatedAt      field.Time
-	UpdatedAt      field.Time
+	User           transactionsBelongsToUser
 
 	fieldMap map[string]field.Expr
 }
@@ -105,6 +111,8 @@ func (t transactions) As(alias string) *transactions {
 func (t *transactions) updateTableName(table string) *transactions {
 	t.ALL = field.NewAsterisk(table)
 	t.ID = field.NewUint(table, "id")
+	t.CreatedAt = field.NewTime(table, "created_at")
+	t.UpdatedAt = field.NewTime(table, "updated_at")
 	t.UserId = field.NewUint(table, "user_id")
 	t.TerminalId = field.NewUint(table, "terminal_id")
 	t.TypeId = field.NewUint(table, "type_id")
@@ -128,8 +136,6 @@ func (t *transactions) updateTableName(table string) *transactions {
 	t.WalletCredited = field.NewBool(table, "wallet_credited")
 	t.Version = field.NewString(table, "version")
 	t.Device = field.NewString(table, "device")
-	t.CreatedAt = field.NewTime(table, "created_at")
-	t.UpdatedAt = field.NewTime(table, "updated_at")
 
 	t.fillFieldMap()
 
@@ -146,8 +152,10 @@ func (t *transactions) GetFieldByName(fieldName string) (field.OrderExpr, bool) 
 }
 
 func (t *transactions) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 26)
+	t.fieldMap = make(map[string]field.Expr, 27)
 	t.fieldMap["id"] = t.ID
+	t.fieldMap["created_at"] = t.CreatedAt
+	t.fieldMap["updated_at"] = t.UpdatedAt
 	t.fieldMap["user_id"] = t.UserId
 	t.fieldMap["terminal_id"] = t.TerminalId
 	t.fieldMap["type_id"] = t.TypeId
@@ -171,8 +179,7 @@ func (t *transactions) fillFieldMap() {
 	t.fieldMap["wallet_credited"] = t.WalletCredited
 	t.fieldMap["version"] = t.Version
 	t.fieldMap["device"] = t.Device
-	t.fieldMap["created_at"] = t.CreatedAt
-	t.fieldMap["updated_at"] = t.UpdatedAt
+
 }
 
 func (t transactions) clone(db *gorm.DB) transactions {
@@ -183,6 +190,77 @@ func (t transactions) clone(db *gorm.DB) transactions {
 func (t transactions) replaceDB(db *gorm.DB) transactions {
 	t.transactionsDo.ReplaceDB(db)
 	return t
+}
+
+type transactionsBelongsToUser struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a transactionsBelongsToUser) Where(conds ...field.Expr) *transactionsBelongsToUser {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a transactionsBelongsToUser) WithContext(ctx context.Context) *transactionsBelongsToUser {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a transactionsBelongsToUser) Session(session *gorm.Session) *transactionsBelongsToUser {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a transactionsBelongsToUser) Model(m *models.Transactions) *transactionsBelongsToUserTx {
+	return &transactionsBelongsToUserTx{a.db.Model(m).Association(a.Name())}
+}
+
+type transactionsBelongsToUserTx struct{ tx *gorm.Association }
+
+func (a transactionsBelongsToUserTx) Find() (result *models.User, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a transactionsBelongsToUserTx) Append(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a transactionsBelongsToUserTx) Replace(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a transactionsBelongsToUserTx) Delete(values ...*models.User) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a transactionsBelongsToUserTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a transactionsBelongsToUserTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type transactionsDo struct{ gen.DO }
