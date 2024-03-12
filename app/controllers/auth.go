@@ -32,7 +32,7 @@ func Login(c echo.Context) error {
 	agent := terminal.User // Get the terminal agent
 
 	if !utils.HashIsValid(loginData.Password, agent.Password) {
-		return c.JSON(http.StatusUnauthorized, utils.FailedResponse("Invalid credentials."))
+		return c.JSON(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid credentials."))
 	}
 
 	err = ensureTerminalCanLogin(terminal)

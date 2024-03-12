@@ -33,7 +33,7 @@ type Terminal struct {
 
 func (t Terminal) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email":  t.User.Email,
+		"id":     t.User.ID,
 		"serial": t.Serial,
 		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
