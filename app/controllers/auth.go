@@ -53,6 +53,7 @@ func Login(c echo.Context) error {
 		"currency_code":   terminal.CurrencyCode,
 		"first_name":      agent.FirstName,
 		"name":            agent.Name(),
+		"business_name":   agent.BusinessName,
 		"phone":           agent.Phone,
 		"level":           agent.LevelId,
 		"terminal_status": terminal.Status,
