@@ -49,6 +49,11 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.EmailVerifiedAt = field.NewTime(tableName, "email_verified_at")
 	_user.Password = field.NewString(tableName, "password")
 	_user.DeletedAt = field.NewField(tableName, "deleted_at")
+	_user.Wallet = userHasOneWallet{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("Wallet", "models.Wallet"),
+	}
 
 	_user.fillFieldMap()
 
@@ -82,6 +87,7 @@ type user struct {
 	EmailVerifiedAt field.Time
 	Password        field.String
 	DeletedAt       field.Field
+	Wallet          userHasOneWallet
 
 	fieldMap map[string]field.Expr
 }
@@ -137,7 +143,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 23)
+	u.fieldMap = make(map[string]field.Expr, 24)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
@@ -161,6 +167,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["email_verified_at"] = u.EmailVerifiedAt
 	u.fieldMap["password"] = u.Password
 	u.fieldMap["deleted_at"] = u.DeletedAt
+
 }
 
 func (u user) clone(db *gorm.DB) user {
@@ -171,6 +178,77 @@ func (u user) clone(db *gorm.DB) user {
 func (u user) replaceDB(db *gorm.DB) user {
 	u.userDo.ReplaceDB(db)
 	return u
+}
+
+type userHasOneWallet struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a userHasOneWallet) Where(conds ...field.Expr) *userHasOneWallet {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a userHasOneWallet) WithContext(ctx context.Context) *userHasOneWallet {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a userHasOneWallet) Session(session *gorm.Session) *userHasOneWallet {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a userHasOneWallet) Model(m *models.User) *userHasOneWalletTx {
+	return &userHasOneWalletTx{a.db.Model(m).Association(a.Name())}
+}
+
+type userHasOneWalletTx struct{ tx *gorm.Association }
+
+func (a userHasOneWalletTx) Find() (result *models.Wallet, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a userHasOneWalletTx) Append(values ...*models.Wallet) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a userHasOneWalletTx) Replace(values ...*models.Wallet) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a userHasOneWalletTx) Delete(values ...*models.Wallet) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a userHasOneWalletTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a userHasOneWalletTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type userDo struct{ gen.DO }

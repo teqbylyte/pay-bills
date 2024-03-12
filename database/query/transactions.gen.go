@@ -56,6 +56,11 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("User", "models.User"),
+		Wallet: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("User.Wallet", "models.Wallet"),
+		},
 	}
 
 	_transactions.fillFieldMap()
@@ -196,6 +201,10 @@ type transactionsBelongsToUser struct {
 	db *gorm.DB
 
 	field.RelationField
+
+	Wallet struct {
+		field.RelationField
+	}
 }
 
 func (a transactionsBelongsToUser) Where(conds ...field.Expr) *transactionsBelongsToUser {

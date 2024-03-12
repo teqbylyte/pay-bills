@@ -53,6 +53,11 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("User", "models.User"),
+		Wallet: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("User.Wallet", "models.Wallet"),
+		},
 	}
 
 	_terminal.fillFieldMap()
@@ -184,6 +189,10 @@ type terminalBelongsToUser struct {
 	db *gorm.DB
 
 	field.RelationField
+
+	Wallet struct {
+		field.RelationField
+	}
 }
 
 func (a terminalBelongsToUser) Where(conds ...field.Expr) *terminalBelongsToUser {

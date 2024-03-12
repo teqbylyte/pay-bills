@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"martpay/app/enums"
 	"time"
 )
 
@@ -20,7 +21,7 @@ type User struct {
 	State           string         `json:"state"`
 	Country         string         `json:"country"`
 	Address         string         `json:"address"`
-	Status          string         `json:"status" gorm:"not null"`
+	Status          enums.State    `json:"status" gorm:"not null"`
 	Avatar          string         `json:"avatar"`
 	Bvn             string         `json:"bvn"`
 	Nin             string         `json:"nin"`
@@ -28,6 +29,7 @@ type User struct {
 	EmailVerifiedAt time.Time      `json:"email_verified_at"`
 	Password        string         `json:"password" gorm:"not null"`
 	DeletedAt       gorm.DeletedAt `json:"deleted_at"`
+	Wallet          Wallet         `json:"wallet"`
 }
 
 func (u User) Name() string {
