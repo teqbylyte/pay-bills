@@ -52,15 +52,10 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	_transactions.WalletCredited = field.NewBool(tableName, "wallet_credited")
 	_transactions.Version = field.NewString(tableName, "version")
 	_transactions.Device = field.NewString(tableName, "device")
-	_transactions.User = transactionsBelongsToUser{
+	_transactions.Service = transactionsBelongsToService{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("User", "models.User"),
-		Wallet: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("User.Wallet", "models.Wallet"),
-		},
+		RelationField: field.NewRelation("Service", "models.Service"),
 	}
 
 	_transactions.fillFieldMap()
@@ -98,7 +93,7 @@ type transactions struct {
 	WalletCredited field.Bool
 	Version        field.String
 	Device         field.String
-	User           transactionsBelongsToUser
+	Service        transactionsBelongsToService
 
 	fieldMap map[string]field.Expr
 }
@@ -197,17 +192,13 @@ func (t transactions) replaceDB(db *gorm.DB) transactions {
 	return t
 }
 
-type transactionsBelongsToUser struct {
+type transactionsBelongsToService struct {
 	db *gorm.DB
 
 	field.RelationField
-
-	Wallet struct {
-		field.RelationField
-	}
 }
 
-func (a transactionsBelongsToUser) Where(conds ...field.Expr) *transactionsBelongsToUser {
+func (a transactionsBelongsToService) Where(conds ...field.Expr) *transactionsBelongsToService {
 	if len(conds) == 0 {
 		return &a
 	}
@@ -220,27 +211,27 @@ func (a transactionsBelongsToUser) Where(conds ...field.Expr) *transactionsBelon
 	return &a
 }
 
-func (a transactionsBelongsToUser) WithContext(ctx context.Context) *transactionsBelongsToUser {
+func (a transactionsBelongsToService) WithContext(ctx context.Context) *transactionsBelongsToService {
 	a.db = a.db.WithContext(ctx)
 	return &a
 }
 
-func (a transactionsBelongsToUser) Session(session *gorm.Session) *transactionsBelongsToUser {
+func (a transactionsBelongsToService) Session(session *gorm.Session) *transactionsBelongsToService {
 	a.db = a.db.Session(session)
 	return &a
 }
 
-func (a transactionsBelongsToUser) Model(m *models.Transactions) *transactionsBelongsToUserTx {
-	return &transactionsBelongsToUserTx{a.db.Model(m).Association(a.Name())}
+func (a transactionsBelongsToService) Model(m *models.Transactions) *transactionsBelongsToServiceTx {
+	return &transactionsBelongsToServiceTx{a.db.Model(m).Association(a.Name())}
 }
 
-type transactionsBelongsToUserTx struct{ tx *gorm.Association }
+type transactionsBelongsToServiceTx struct{ tx *gorm.Association }
 
-func (a transactionsBelongsToUserTx) Find() (result *models.User, err error) {
+func (a transactionsBelongsToServiceTx) Find() (result *models.Service, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a transactionsBelongsToUserTx) Append(values ...*models.User) (err error) {
+func (a transactionsBelongsToServiceTx) Append(values ...*models.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -248,7 +239,7 @@ func (a transactionsBelongsToUserTx) Append(values ...*models.User) (err error) 
 	return a.tx.Append(targetValues...)
 }
 
-func (a transactionsBelongsToUserTx) Replace(values ...*models.User) (err error) {
+func (a transactionsBelongsToServiceTx) Replace(values ...*models.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -256,7 +247,7 @@ func (a transactionsBelongsToUserTx) Replace(values ...*models.User) (err error)
 	return a.tx.Replace(targetValues...)
 }
 
-func (a transactionsBelongsToUserTx) Delete(values ...*models.User) (err error) {
+func (a transactionsBelongsToServiceTx) Delete(values ...*models.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -264,11 +255,11 @@ func (a transactionsBelongsToUserTx) Delete(values ...*models.User) (err error) 
 	return a.tx.Delete(targetValues...)
 }
 
-func (a transactionsBelongsToUserTx) Clear() error {
+func (a transactionsBelongsToServiceTx) Clear() error {
 	return a.tx.Clear()
 }
 
-func (a transactionsBelongsToUserTx) Count() int64 {
+func (a transactionsBelongsToServiceTx) Count() int64 {
 	return a.tx.Count()
 }
 

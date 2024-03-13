@@ -26,6 +26,7 @@ func Api(e *echo.Echo) {
 	auth := v1.Group("", echojwt.WithConfig(jwtConfig()))
 
 	auth.GET("/dashboard", ctrl.Dashboard)
+	auth.GET("/transactions", ctrl.Transaction)
 }
 
 func jwtConfig() echojwt.Config {

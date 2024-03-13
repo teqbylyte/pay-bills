@@ -35,7 +35,7 @@ func (t Terminal) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":     t.User.ID,
 		"serial": t.Serial,
-		"exp":    time.Now().Add(time.Hour * 24).Unix(),
+		"exp":    time.Now().Add(time.Hour * 168).Unix(),
 	})
 
 	accessToken, err := token.SignedString([]byte(viper.GetString("APP_KEY")))
