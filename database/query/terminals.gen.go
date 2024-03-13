@@ -60,6 +60,12 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 		},
 	}
 
+	_terminal.Services = terminalManyToManyServices{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("Services", "models.Service"),
+	}
+
 	_terminal.fillFieldMap()
 
 	return _terminal
@@ -93,6 +99,8 @@ type terminal struct {
 	WrongPinCount field.Int
 	HasChangedPin field.Bool
 	User          terminalBelongsToUser
+
+	Services terminalManyToManyServices
 
 	fieldMap map[string]field.Expr
 }
@@ -148,7 +156,7 @@ func (t *terminal) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *terminal) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 24)
+	t.fieldMap = make(map[string]field.Expr, 25)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["created_at"] = t.CreatedAt
 	t.fieldMap["updated_at"] = t.UpdatedAt
@@ -257,6 +265,77 @@ func (a terminalBelongsToUserTx) Clear() error {
 }
 
 func (a terminalBelongsToUserTx) Count() int64 {
+	return a.tx.Count()
+}
+
+type terminalManyToManyServices struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a terminalManyToManyServices) Where(conds ...field.Expr) *terminalManyToManyServices {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a terminalManyToManyServices) WithContext(ctx context.Context) *terminalManyToManyServices {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a terminalManyToManyServices) Session(session *gorm.Session) *terminalManyToManyServices {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a terminalManyToManyServices) Model(m *models.Terminal) *terminalManyToManyServicesTx {
+	return &terminalManyToManyServicesTx{a.db.Model(m).Association(a.Name())}
+}
+
+type terminalManyToManyServicesTx struct{ tx *gorm.Association }
+
+func (a terminalManyToManyServicesTx) Find() (result []*models.Service, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a terminalManyToManyServicesTx) Append(values ...*models.Service) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a terminalManyToManyServicesTx) Replace(values ...*models.Service) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a terminalManyToManyServicesTx) Delete(values ...*models.Service) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a terminalManyToManyServicesTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a terminalManyToManyServicesTx) Count() int64 {
 	return a.tx.Count()
 }
 

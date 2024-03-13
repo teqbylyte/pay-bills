@@ -29,8 +29,10 @@ type Terminal struct {
 	Pin           string      `json:"pin"`
 	WrongPinCount int         `json:"wrong_pin_count"`
 	HasChangedPin bool        `json:"has_changed_pin"`
+	Services      []Service   `json:"services" gorm:"many2many:service_terminal"`
 }
 
+// GenerateToken - Generate valid jwt to be used by the user of the terminal
 func (t Terminal) GenerateToken() string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":     t.User.ID,
@@ -45,4 +47,18 @@ func (t Terminal) GenerateToken() string {
 	}
 
 	return accessToken
+}
+
+// Menus - Get the terminal menus from the services added to the terminal
+func (t Terminal) Menus() []map[string]any {
+	menus := make([]map[string]any, len(t.Services))
+
+	for i, service := range t.Services {
+		menus[i] = map[string]any{
+			"id":   service.ID,
+			"name": service.MenuName,
+		}
+	}
+
+	return menus
 }
