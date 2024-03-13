@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Transactions - Get auth user transactions
 func Transactions(c echo.Context) error {
 	user := c.Get("user").(*models.User)
 

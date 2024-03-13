@@ -36,15 +36,13 @@ func jwtConfig() echojwt.Config {
 		SigningKey: []byte(viper.GetString("APP_KEY")),
 		SuccessHandler: func(c echo.Context) {
 			claims := c.Get("user").(*jwt.Token).Claims.(jwt.MapClaims)
-			userId := uint(claims["id"].(float64))
+			userId := uint(claims["id"].(float64)) // Get user id from claims
 
 			users := query.User
-			user, err := users.Where(users.ID.Eq(userId)).
-				Preload(users.Wallet).
-				First()
+			user, err := users.Where(users.ID.Eq(userId)).Preload(users.Wallet).First()
 
 			if err == nil {
-				c.Set("user", user)
+				c.Set("user", user) // Set auth user to the request context
 			}
 		},
 	}

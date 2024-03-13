@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// Services - Get auth user services available to terminal device
 func Services(c echo.Context) error {
 	serial := c.Request().Header.Get("deviceId")
 

@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// WalletTransactions - Get auth user wallet transactions
 func WalletTransactions(c echo.Context) error {
 	user := c.Get("user").(*models.User)
 
