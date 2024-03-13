@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/datatypes"
+import (
+	"gorm.io/datatypes"
+	"martpay/app/enums"
+)
 
 type Transactions struct {
 	BaseModel
@@ -19,7 +22,7 @@ type Transactions struct {
 	AccountName    *string        `json:"account_name"`
 	Info           *string        `json:"info"`
 	PowerToken     *string        `json:"power_token"`
-	Status         string         `json:"status"`
+	Status         enums.Status   `json:"status"`
 	Channel        string         `json:"channel"`
 	Provider       string         `json:"provider"`
 	Meta           datatypes.JSON `json:"meta"`

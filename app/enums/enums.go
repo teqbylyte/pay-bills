@@ -19,4 +19,14 @@ const (
 	PassportPhotograph DocumentType = "PASSPORT PHOTOGRAPH"
 	IDCard             DocumentType = "ID CARD"
 	UtilityBill        DocumentType = "Utility Bill"
+
+	CASHOUT        string = "cashoutwithdrawal"
+	AIRTIME        string = "airtime"
+	DATA           string = "internetdata"
+	TRANSFER       string = "banktransfer"
+	WALLETTRANSFER string = "wallettransfer"
+	LOAN           string = "loan"
+	ELECTRICITY    string = "electricity"
+	CABLETV        string = "cabeltv"
+	FUNDING        string = "fundinginbound"
 )

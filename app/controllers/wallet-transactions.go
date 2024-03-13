@@ -9,14 +9,14 @@ import (
 	"net/http"
 )
 
-func Transactions(c echo.Context) error {
+func WalletTransactions(c echo.Context) error {
 	user := c.Get("user").(*models.User)
 
-	transactions := make([]models.Transactions, 0)
+	transactions := make([]models.WalletTransaction, 0)
 
-	tQ := query.Transactions
-	err := tQ.Where(tQ.UserId.Eq(user.ID)).
-		Order(tQ.CreatedAt.Desc()).
+	wtQ := query.WalletTransaction
+	err := wtQ.Where(wtQ.WalletId.Eq(user.Wallet.ID)).
+		Order(wtQ.CreatedAt.Desc()).
 		Scan(&transactions)
 
 	if err != nil {
@@ -24,5 +24,5 @@ func Transactions(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailedResponse(err.Error()))
 	}
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("Transactions fetched", transactions))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("Wallet Transactions fetched", transactions))
 }
