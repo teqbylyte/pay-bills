@@ -8,3 +8,9 @@ func HashIsValid(value string, hashedValue string) bool {
 
 	return err == nil
 }
+
+func MakeHash(password string) string {
+	hashedPass, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	return string(hashedPass)
+}
