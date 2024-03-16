@@ -30,6 +30,7 @@ func Api(e *echo.Echo) {
 	auth.GET("/wallet-transactions", ctrl.WalletTransactions)
 	auth.GET("/terminal/menus", ctrl.Menus)
 	auth.POST("/terminal/reset/:type", ctrl.ResetPin)
+	auth.GET("/loans", ctrl.GetLoans)
 }
 
 func jwtConfig() echojwt.Config {

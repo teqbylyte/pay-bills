@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"gorm.io/datatypes"
 	"time"
 )
 
@@ -18,4 +19,16 @@ type TransactionDto struct {
 	WalletCredited *bool     `json:"wallet_credited"`
 	WalletDebited  *bool     `json:"wallet_debited"`
 	CreatedAt      time.Time `json:"created_at"`
+}
+
+type LoanDto struct {
+	Id            uint           `json:"id"`
+	Amount        float64        `json:"amount"`
+	Charge        float64        `json:"charge"`
+	AmountOwed    float64        `json:"amount_owed"`
+	Items         datatypes.JSON `json:"items"`
+	Status        string         `json:"status"`
+	Info          *string        `json:"info"`
+	DeclineReason *string        `json:"decline_reason"`
+	CreatedAt     time.Time      `json:"created_at"`
 }
