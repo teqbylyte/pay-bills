@@ -4,7 +4,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"martpay/app/dto"
 	"martpay/app/enums"
-	"martpay/app/helpers"
 	"martpay/app/models"
 	"martpay/app/request"
 	"martpay/app/utils"
@@ -41,12 +40,12 @@ func CreateLoan(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid data", vte))
 	}
 
-	terminal := helpers.DeviceTerminal(c)
+	terminal := utils.AuthTerminal(c)
 	service, _ := query.Service.Where(query.Service.Slug.Eq(enums.LOAN)).First()
 
 	charge := 0.0 // Todo: Get Charge
 	totalAmount := charge + data.Amount
-	reference := helpers.NewTransactionReference()
+	reference := utils.NewTransactionReference()
 
 	transaction := models.NewPendingTransaction(terminal, service, data.Amount, totalAmount, reference, "", "INTERNAL", &data.TerminalInfo)
 
