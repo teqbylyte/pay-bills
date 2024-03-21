@@ -3,13 +3,14 @@ package models
 import (
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"martpay/app/enums"
 	"time"
 )
 
 type Terminal struct {
-	BaseModel
-	BelongsToUser
+	gorm.Model
+	UserId        uint        `json:"user_id" gorm:"not null"`
 	GroupId       uint        `json:"group_id" gorm:"not null"`
 	Device        string      `json:"device" gorm:"not null"`
 	Serial        string      `json:"serial" gorm:"not null"`
@@ -30,6 +31,7 @@ type Terminal struct {
 	WrongPinCount int         `json:"wrong_pin_count"`
 	HasChangedPin bool        `json:"has_changed_pin"`
 	Services      []Service   `json:"services" gorm:"many2many:service_terminal"`
+	User          User        `json:"agent"`
 }
 
 // GenerateToken - Generate valid jwt to be used by the user of the terminal

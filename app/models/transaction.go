@@ -3,6 +3,7 @@ package models
 import (
 	"gorm.io/datatypes"
 	"martpay/app/enums"
+	"martpay/app/request"
 )
 
 type Transactions struct {
@@ -31,4 +32,31 @@ type Transactions struct {
 	Version        string         `json:"version"`
 	Device         string         `json:"device"`
 	Service        Service        `json:"service" gorm:"foreignKey:TypeId"`
+}
+
+func NewPendingTransaction(
+	terminal *Terminal,
+	service *Service,
+	amount float64,
+	totalAmount float64,
+	reference string,
+	info string,
+	provider string,
+	terminalInfo *request.TerminalInfo) *Transactions {
+
+	return &Transactions{
+		UserId:      terminal.UserId,
+		TerminalId:  terminal.ID,
+		TypeId:      service.ID,
+		Amount:      amount,
+		TotalAmount: totalAmount,
+		Charge:      totalAmount - amount,
+		Reference:   reference,
+		Status:      enums.PENDING,
+		Info:        &info,
+		Provider:    provider,
+		Channel:     terminalInfo.CHANNEL,
+		Version:     terminalInfo.VERSION,
+		Device:      terminalInfo.DEVICE,
+	}
 }
