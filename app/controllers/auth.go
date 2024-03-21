@@ -41,6 +41,8 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusForbidden, utils.FailedResponse(err.Error()))
 	}
 
+	token, expiresAt := terminal.GenerateToken()
+
 	return c.JSON(http.StatusOK, utils.SuccessResponse("Login successful", map[string]any{
 		"id":              terminal.ID,
 		"serial":          terminal.Serial,
@@ -57,7 +59,11 @@ func Login(c echo.Context) error {
 		"phone":           agent.Phone,
 		"level":           agent.LevelId,
 		"terminal_status": terminal.Status,
-		"token":           terminal.GenerateToken(),
+		"access_token": map[string]any{
+			"value":      token,
+			"type":       "Bearer",
+			"expires_at": expiresAt,
+		},
 	}))
 }
 

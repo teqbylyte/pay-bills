@@ -3,13 +3,12 @@ package models
 import (
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 	"martpay/app/enums"
 	"time"
 )
 
 type Terminal struct {
-	gorm.Model
+	BaseModel
 	UserId        uint        `json:"user_id" gorm:"not null"`
 	GroupId       uint        `json:"group_id" gorm:"not null"`
 	Device        string      `json:"device" gorm:"not null"`
@@ -35,11 +34,13 @@ type Terminal struct {
 }
 
 // GenerateToken - Generate valid jwt to be used by the user of the terminal
-func (t Terminal) GenerateToken() string {
+func (t Terminal) GenerateToken() (string, time.Time) {
+	expiresAt := time.Now().Add(time.Hour * 168)
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":     t.User.ID,
 		"serial": t.Serial,
-		"exp":    time.Now().Add(time.Hour * 168).Unix(),
+		"exp":    expiresAt.Unix(),
 	})
 
 	accessToken, err := token.SignedString([]byte(viper.GetString("APP_KEY")))
@@ -48,7 +49,7 @@ func (t Terminal) GenerateToken() string {
 		panic(err)
 	}
 
-	return accessToken
+	return accessToken, expiresAt
 }
 
 // Menus - Get the terminal menus from the services added to the terminal
