@@ -26,6 +26,7 @@ func Setup() {
 	}
 }
 
+// Configure timezone for application
 func configureTimezone() {
 	timezone := "Africa/Lagos"
 

@@ -20,7 +20,7 @@ func Login(c echo.Context) error {
 	var loginData LoginData
 	err := c.Bind(&loginData)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, utils.FailedResponse("Request error", err.Error()))
+		return c.JSON(http.StatusBadRequest, utils.FailedResponse("An error occurred", err.Error()))
 	}
 
 	terminals := query.Terminal

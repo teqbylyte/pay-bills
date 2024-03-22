@@ -19,6 +19,9 @@ func Api(e *echo.Echo) {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST},
 	}))
 
+	//Register route
+	v1.POST("/register", ctrl.Register)
+
 	// Login route
 	v1.POST("/auth", ctrl.Login)
 

@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
 	"martpay/app/enums"
+	"strings"
 	"time"
 )
 
@@ -13,7 +15,7 @@ type Terminal struct {
 	GroupId       uint        `json:"group_id" gorm:"not null"`
 	Device        string      `json:"device" gorm:"not null"`
 	Serial        string      `json:"serial" gorm:"not null"`
-	Status        enums.State `json:"status" gorm:"not null"`
+	Status        enums.State `json:"status" gorm:"not null;default:ACTIVE"`
 	Tid           string      `json:"tid"`
 	Mid           string      `json:"mid"`
 	Tmk           string      `json:"tmk"`
@@ -21,12 +23,12 @@ type Terminal struct {
 	Tpk           string      `json:"tpk"`
 	DateTime      string      `json:"date_time"`
 	Timeout       int         `json:"timeout"`
-	CurrencyCode  string      `json:"currency_code"`
-	CountryCode   string      `json:"country_code"`
-	CategoryCode  string      `json:"category_code"`
+	CurrencyCode  string      `json:"currency_code" gorm:"default:566"`
+	CountryCode   string      `json:"country_code" gorm:"default:566"`
+	CategoryCode  string      `json:"category_code" gorm:"default:1234"`
 	NameLocation  string      `json:"name_location"`
-	AdminPin      string      `json:"admin_pin"`
-	Pin           string      `json:"pin"`
+	AdminPin      string      `json:"admin_pin" gorm:"default:0000"`
+	Pin           string      `json:"pin" gorm:"default:0000"`
 	WrongPinCount int         `json:"wrong_pin_count"`
 	HasChangedPin bool        `json:"has_changed_pin"`
 	Services      []Service   `json:"services" gorm:"many2many:service_terminal"`
@@ -64,4 +66,21 @@ func (t Terminal) Menus() []map[string]any {
 	}
 
 	return menus
+}
+
+// NewTerminal - Creating a new terminal
+func NewTerminal(agent *User, serial string, device string, tid string) *Terminal {
+	year := fmt.Sprintf("%v", time.Now().Year())
+	mid := year + strings.Repeat("0", 11)
+
+	nameLocation := fmt.Sprintf("%s            LA NG", agent.Name())
+
+	return &Terminal{
+		UserId:       agent.ID,
+		Serial:       serial,
+		Device:       device,
+		Tid:          tid,
+		Mid:          mid,
+		NameLocation: nameLocation,
+	}
 }

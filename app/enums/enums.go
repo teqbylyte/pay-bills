@@ -5,6 +5,7 @@ type Status string
 type DocumentType string
 type ScheduleType string
 type SchedulePeriod string
+type Role string
 
 const (
 	ACTIVE    State = "ACTIVE"
@@ -29,4 +30,7 @@ const (
 	ELECTRICITY    string = "electricity"
 	CABLETV        string = "cabeltv"
 	FUNDING        string = "fundinginbound"
+
+	AGENT      Role = "agent"
+	SUPERAGENT Role = "super-agent"
 )

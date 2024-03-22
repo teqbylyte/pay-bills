@@ -36,6 +36,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.BusinessName = field.NewString(tableName, "business_name")
 	_user.Email = field.NewString(tableName, "email")
 	_user.Phone = field.NewString(tableName, "phone")
+	_user.Type = field.NewString(tableName, "type")
 	_user.Gender = field.NewString(tableName, "gender")
 	_user.Dob = field.NewString(tableName, "dob")
 	_user.State = field.NewString(tableName, "state")
@@ -74,6 +75,7 @@ type user struct {
 	BusinessName    field.String
 	Email           field.String
 	Phone           field.String
+	Type            field.String
 	Gender          field.String
 	Dob             field.String
 	State           field.String
@@ -114,6 +116,7 @@ func (u *user) updateTableName(table string) *user {
 	u.BusinessName = field.NewString(table, "business_name")
 	u.Email = field.NewString(table, "email")
 	u.Phone = field.NewString(table, "phone")
+	u.Type = field.NewString(table, "type")
 	u.Gender = field.NewString(table, "gender")
 	u.Dob = field.NewString(table, "dob")
 	u.State = field.NewString(table, "state")
@@ -143,7 +146,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 24)
+	u.fieldMap = make(map[string]field.Expr, 25)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
@@ -154,6 +157,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["business_name"] = u.BusinessName
 	u.fieldMap["email"] = u.Email
 	u.fieldMap["phone"] = u.Phone
+	u.fieldMap["type"] = u.Type
 	u.fieldMap["gender"] = u.Gender
 	u.fieldMap["dob"] = u.Dob
 	u.fieldMap["state"] = u.State

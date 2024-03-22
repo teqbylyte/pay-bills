@@ -53,16 +53,6 @@ func Connect() {
 	//g.Execute()
 }
 
-func mysqlDsn() string {
-	host := viper.GetString("DB_HOST")
-	user := viper.GetString("DB_USER")
-	password := viper.GetString("DB_PASS")
-	dbname := viper.GetString("DB_NAME")
-	port := viper.GetString("DB_PORT")
-
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, dbname)
-}
-
 func postgresDsn() string {
 	host := viper.GetString("DB_HOST")
 	user := viper.GetString("DB_USER")
@@ -75,7 +65,17 @@ func postgresDsn() string {
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s", host, user, password, dbname, port, ssl, timezone)
 }
 
-/*func (database Database) runMigration(gormDB *gorm.DB) {
+func mysqlDsn() string {
+	host := viper.GetString("DB_HOST")
+	user := viper.GetString("DB_USER")
+	password := viper.GetString("DB_PASS")
+	dbname := viper.GetString("DB_NAME")
+	port := viper.GetString("DB_PORT")
+
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, dbname)
+}
+
+/*func runMigration(gormDB *gorm.DB) {
 	_ = gormDB.AutoMigrate(&model2.User{})
 	_ = gormDB.AutoMigrate(&model2.Wallet{})
 	_ = gormDB.AutoMigrate(&model2.WalletTransaction{})

@@ -5,7 +5,7 @@ import (
 	"martpay/app/contracts"
 )
 
-// Validate - Validate the struct argument based on the given rules set.
+// Validate - Validate the data structure based on the rules set in its Rules() method.
 func Validate(i contracts.ValidationInterface) any {
 	opts := govalidator.Options{
 		Data:  i,
@@ -20,7 +20,7 @@ func Validate(i contracts.ValidationInterface) any {
 	return nil
 }
 
-// TerminalInfo - This data refers to the body data that should be present
+// TerminalInfo - This data structure refers to the body data that should be present
 // in every request that involves creating a transaction.
 type TerminalInfo struct {
 	VERSION string `json:"VERSION"`

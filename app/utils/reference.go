@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"fmt"
-	"martpay/database/query"
 	"math/rand"
 	"time"
 	"unsafe"
@@ -32,16 +30,4 @@ func GenerateReference(size int) string {
 	}
 
 	return *(*string)(unsafe.Pointer(&b))
-}
-
-func NewTransactionReference() string {
-	reference := fmt.Sprintf("mp_%s", GenerateReference(17))
-
-	// check for duplicate reference
-	count, _ := query.Transactions.Where(query.Transactions.Reference.Eq(reference)).Count()
-	if count > 0 {
-		return NewTransactionReference()
-	}
-
-	return reference
 }
