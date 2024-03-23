@@ -26,6 +26,7 @@ func GetLoans(c echo.Context) error {
 
 func CreateLoan(c echo.Context) error {
 	agent := c.Get("user").(*models.User)
+	terminal := helper.AuthTerminal(c)
 
 	data := new(request.LoanData)
 
@@ -34,14 +35,17 @@ func CreateLoan(c echo.Context) error {
 	}
 
 	if vte := request.Validate(&data.TerminalInfo); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid device", vte))
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
 	}
 
 	if vte := request.Validate(data); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid data", vte))
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
 	}
 
-	terminal := helper.AuthTerminal(c)
+	if err := helper.CheckTerminalPin(terminal, data.TerminalInfo.Pin); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, utils.FailedResponse(err.Error()))
+	}
+
 	service, _ := query.Service.Where(query.Service.Slug.Eq(enums.LOAN)).First()
 
 	charge := 0.0 // Todo: Get Charge

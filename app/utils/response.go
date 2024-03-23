@@ -33,3 +33,10 @@ func FailedResponse(message string, data ...any) MyResponse {
 		Data:    payload,
 	}
 }
+
+func FailedValidation(errors any) map[string]any {
+	return map[string]any{
+		"message": "Invalid data",
+		"errors":  errors,
+	}
+}

@@ -36,7 +36,7 @@ func Api(e *echo.Echo) {
 	auth.GET("/loans", ctrl.GetLoans)
 
 	// Request for terminal transactions and purchases
-	//auth.Use(middleware2.TerminalTransaction)
+	//TODO: Check that the serial in the deviceId belongs to the auth user
 
 	auth.POST("/loans", ctrl.CreateLoan)
 }

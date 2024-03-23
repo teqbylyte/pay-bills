@@ -23,6 +23,7 @@ func Validate(i contracts.ValidationInterface) any {
 // TerminalInfo - This data structure refers to the body data that should be present
 // in every request that involves creating a transaction.
 type TerminalInfo struct {
+	Serial  string `json:"serial"`
 	VERSION string `json:"VERSION"`
 	CHANNEL string `json:"CHANNEL"`
 	DEVICE  string `json:"DEVICE"`
@@ -34,6 +35,6 @@ func (t TerminalInfo) Rules() govalidator.MapData {
 		"VERSION": []string{"required"},
 		"CHANNEL": []string{"required"},
 		"DEVICE":  []string{"required"},
-		"pin":     []string{"required", "digits:4"}, // Todo: Check current pin
+		"pin":     []string{"required", "digits:4", "not_in:0000"},
 	}
 }

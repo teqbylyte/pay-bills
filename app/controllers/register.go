@@ -21,7 +21,7 @@ func Register(c echo.Context) error {
 	}
 
 	if vte := request.Validate(&data); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid device", vte))
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
 	}
 
 	uQ := query.User

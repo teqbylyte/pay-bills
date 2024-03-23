@@ -3,6 +3,7 @@ package ctrl
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	helper "martpay/app/helpers"
 	"martpay/app/request"
 	"martpay/app/utils"
 	"martpay/database/query"
@@ -20,12 +21,13 @@ func Menus(c echo.Context) error {
 }
 
 func ResetPin(c echo.Context) error {
+	terminal := helper.AuthTerminal(c)
+
 	var err error
 	pinType := c.Param("type")
 
-	serial := c.Request().Header.Get("deviceId")
 	tQ := query.Terminal
-	t := tQ.Where(query.Terminal.Serial.Eq(serial))
+	t := tQ.Where(query.Terminal.Serial.Eq(terminal.Serial))
 
 	if pinType == "pin" { // Reset the terminal pin
 		pin := new(request.PinUpdateData)
@@ -34,7 +36,11 @@ func ResetPin(c echo.Context) error {
 		}
 
 		if vte := request.Validate(pin); vte != nil {
-			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid data", vte))
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+		}
+
+		if err := helper.CheckTerminalPin(terminal, pin.CurrentPin); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, utils.FailedResponse(err.Error()))
 		}
 
 		_, _ = t.Update(tQ.Pin, utils.MakeHash(pin.Pin))
@@ -45,7 +51,11 @@ func ResetPin(c echo.Context) error {
 		}
 
 		if vte := request.Validate(pin); vte != nil {
-			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedResponse("Invalid data", vte))
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+		}
+
+		if err := helper.CheckTerminalAdminPin(terminal, pin.CurrentAdminPin); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, utils.FailedResponse(err.Error()))
 		}
 
 		_, _ = t.Update(tQ.AdminPin, utils.MakeHash(pin.AdminPin))
