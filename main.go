@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	config "martpay/app"
+	"martpay/app/helpers"
 	"martpay/database"
 	"martpay/routes"
 )
@@ -13,6 +14,8 @@ func init() {
 	config.Setup()
 
 	database.Connect()
+
+	helper.CustomRules()
 }
 
 func main() {

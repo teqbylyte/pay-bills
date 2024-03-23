@@ -1,8 +1,10 @@
 package request
 
 import (
+	"fmt"
 	"github.com/thedevsaddam/govalidator"
 	"martpay/app/enums"
+	"strings"
 )
 
 // RegisterData - The data structure accepted during registration of new agent.
@@ -26,20 +28,24 @@ type RegisterData struct {
 }
 
 func (r RegisterData) Rules() govalidator.MapData {
+	states := strings.Join(enums.States(), ",")
+
 	return govalidator.MapData{
-		"serial":           []string{"required"}, // TODO: check unique serial for terminal
+		"serial":           []string{"required", "unique:terminals"},
 		"device":           []string{"required"},
 		"first_name":       []string{"required"},
 		"other_names":      []string{"required"},
-		"email":            []string{"required", "email"},                // TODO: check unique email for user
-		"phone":            []string{"required", "digits_between:11,15"}, // TODO: check unique phone for user
+		"email":            []string{"required", "email", "unique:users"},
+		"phone":            []string{"required", "digits_between:11,15", "unique:users"},
 		"gender":           []string{"required", "in:MALE,FEMALE"},
 		"dob":              []string{"required", "date"},
-		"state":            []string{"required"}, // TODO: check in valid states
+		"state":            []string{"required", fmt.Sprintf("in:%s", states)},
 		"role":             []string{"required", "in:agent,super-agent"},
 		"address":          []string{"required"},
 		"password":         []string{"required"},
-		"confirm_password": []string{"required"}, // TODO: confirm password
+		"confirm_password": []string{"required", fmt.Sprintf("confirm:%s", r.Password)}, // TODO: confirm password
 		"bvn":              []string{"required", "digits:11"},
-	} // TODO: Include referral code to exist db for users
+		"business_name":    []string{"required"},
+		"referral_code":    []string{"exists:users"},
+	}
 }
