@@ -14,9 +14,7 @@ import (
 
 func Register(c echo.Context) error {
 	var data request.RegisterData
-
-	err := c.Bind(&data)
-	if err != nil {
+	if err := c.Bind(&data); err != nil {
 		return c.JSON(http.StatusBadRequest, utils.FailedResponse("An error occurred", err.Error()))
 	}
 

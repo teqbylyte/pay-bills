@@ -29,7 +29,6 @@ func CreateLoan(c echo.Context) error {
 	terminal := helper.AuthTerminal(c)
 
 	data := new(request.LoanData)
-
 	if err := c.Bind(&data); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.FailedResponse(err.Error()))
 	}
