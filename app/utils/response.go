@@ -4,8 +4,10 @@ type MyResponse struct {
 	Success bool   `json:"success" xml:"success"`
 	Message string `json:"message" xml:"message"`
 	Data    any    `json:"data" xml:"data"`
+	Errors  any    `json:"errors"`
 }
 
+// SuccessResponse - The response structure for a successful request call
 func SuccessResponse(message string, data ...any) MyResponse {
 	var payload any
 
@@ -20,6 +22,7 @@ func SuccessResponse(message string, data ...any) MyResponse {
 	}
 }
 
+// FailedResponse - The failed response for a failed request call
 func FailedResponse(message string, data ...any) MyResponse {
 	var payload any
 
@@ -34,9 +37,11 @@ func FailedResponse(message string, data ...any) MyResponse {
 	}
 }
 
-func FailedValidation(errors any) map[string]any {
-	return map[string]any{
-		"message": "Invalid data",
-		"errors":  errors,
+// FailedValidationResponse - The response for a request which fails on data validation. Should be return with a 422 status code.
+func FailedValidationResponse(errors any) MyResponse {
+	return MyResponse{
+		Success: false,
+		Message: "Invalid data",
+		Errors:  errors,
 	}
 }

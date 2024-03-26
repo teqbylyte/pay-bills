@@ -3,6 +3,7 @@ package request
 import (
 	"github.com/thedevsaddam/govalidator"
 	"martpay/app/contracts"
+	"martpay/app/utils"
 )
 
 // Validate - Validate the data structure based on the rules set in its Rules() method.
@@ -14,7 +15,7 @@ func Validate(i contracts.ValidationInterface) any {
 
 	v := govalidator.New(opts)
 	if e := v.ValidateStruct(); len(e) > 0 {
-		return e
+		return utils.FailedValidationResponse(e)
 	}
 
 	return nil

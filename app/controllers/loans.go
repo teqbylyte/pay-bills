@@ -34,11 +34,11 @@ func CreateLoan(c echo.Context) error {
 	}
 
 	if vte := request.Validate(&data.TerminalInfo); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
 	}
 
 	if vte := request.Validate(data); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
 	}
 
 	if err := helper.CheckTerminalPin(terminal, data.TerminalInfo.Pin); err != nil {

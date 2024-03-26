@@ -36,7 +36,7 @@ func ResetPin(c echo.Context) error {
 		}
 
 		if vte := request.Validate(pin); vte != nil {
-			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
 		}
 
 		if err := helper.CheckTerminalPin(terminal, pin.CurrentPin); err != nil {
@@ -51,7 +51,7 @@ func ResetPin(c echo.Context) error {
 		}
 
 		if vte := request.Validate(pin); vte != nil {
-			return echo.NewHTTPError(http.StatusUnprocessableEntity, utils.FailedValidation(vte))
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
 		}
 
 		if err := helper.CheckTerminalAdminPin(terminal, pin.CurrentAdminPin); err != nil {
