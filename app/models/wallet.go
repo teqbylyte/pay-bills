@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"gorm.io/datatypes"
 	"martpay/app/enums"
 )
@@ -15,4 +17,22 @@ type Wallet struct {
 	Status        enums.State    `json:"status" gorm:"type:varchar(20);default:ACTIVE"`
 	DisableDebit  bool           `json:"disable_debit" gorm:"default:false"`
 	Meta          datatypes.JSON `json:"meta"`
+}
+
+func (w Wallet) IsActive() bool {
+	return w.Status == enums.ACTIVE
+}
+
+func (w Wallet) AllowTransaction(amount float64, forDebit bool) error {
+	if w.IsActive() {
+		return errors.New(fmt.Sprintf("Your wallet is %s", w.Status))
+	}
+
+	if forDebit {
+		if amount > w.Balance {
+			return errors.New("Insufficient balance")
+		}
+	}
+
+	return nil
 }

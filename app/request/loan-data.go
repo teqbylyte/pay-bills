@@ -17,3 +17,11 @@ func (l LoanData) Rules() govalidator.MapData {
 		"items":  []string{"required"},
 	}
 }
+
+func (l LoanData) GetAmount() float64 {
+	return l.Amount
+}
+
+func (l LoanData) GetTerminalInfo() TerminalInfo {
+	return l.TerminalInfo
+}

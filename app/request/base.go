@@ -6,6 +6,17 @@ import (
 	"martpay/app/utils"
 )
 
+// NewTransactionInterface - This defines the methods that every request data which would create a new transaction should implement.
+type NewTransactionInterface interface {
+	contracts.ValidationInterface
+
+	// GetAmount - The amount for the specific transaction request
+	GetAmount() float64
+
+	// GetTerminalInfo - The terminal info in the request
+	GetTerminalInfo() TerminalInfo
+}
+
 // Validate - Validate the data structure based on the rules set in its Rules() method.
 func Validate(i contracts.ValidationInterface) any {
 	opts := govalidator.Options{
@@ -21,21 +32,17 @@ func Validate(i contracts.ValidationInterface) any {
 	return nil
 }
 
-// TerminalInfo - This data structure refers to the body data that should be present
-// in every request that involves creating a transaction.
-type TerminalInfo struct {
-	Serial  string `json:"serial"`
-	VERSION string `json:"VERSION"`
-	CHANNEL string `json:"CHANNEL"`
-	DEVICE  string `json:"DEVICE"`
-	Pin     string `json:"pin"`
-}
+func ValidateNewTransaction(i NewTransactionInterface) any {
+	var err any
 
-func (t TerminalInfo) Rules() govalidator.MapData {
-	return govalidator.MapData{
-		"VERSION": []string{"required"},
-		"CHANNEL": []string{"required"},
-		"DEVICE":  []string{"required"},
-		"pin":     []string{"required", "digits:4", "not_in:0000"},
+	terminalInfo := i.GetTerminalInfo()
+	if err = Validate(&terminalInfo); err != nil {
+		return err
 	}
+
+	if err = Validate(i); err != nil {
+		return err
+	}
+
+	return nil
 }

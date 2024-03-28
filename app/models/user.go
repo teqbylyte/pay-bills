@@ -39,6 +39,10 @@ func (u User) Name() string {
 	return fmt.Sprintf("%s %s", u.FirstName, u.OtherNames)
 }
 
+func (u User) IsActive() bool {
+	return u.Status == enums.ACTIVE
+}
+
 // NewUser - Create a new user from the request data.
 func NewUser(data *request.RegisterData, superAgentId *uint) *User {
 	return &User{

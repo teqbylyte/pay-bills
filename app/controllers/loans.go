@@ -33,11 +33,7 @@ func CreateLoan(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, utils.FailedResponse(err.Error()))
 	}
 
-	if vte := request.Validate(&data.TerminalInfo); vte != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
-	}
-
-	if vte := request.Validate(data); vte != nil {
+	if vte := request.ValidateNewTransaction(data); vte != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vte)
 	}
 

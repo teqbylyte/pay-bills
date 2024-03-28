@@ -14,7 +14,7 @@ import (
 func AuthTerminal(c echo.Context) *models.Terminal {
 	serial := c.Request().Header.Get("deviceId")
 	tQ := query.Terminal
-	terminal, _ := tQ.Where(query.Terminal.Serial.Eq(serial)).First()
+	terminal, _ := tQ.Where(query.Terminal.Serial.Eq(serial)).Preload(tQ.User.Wallet).First()
 
 	return terminal
 }
@@ -29,6 +29,7 @@ func CheckTerminalPin(terminal *models.Terminal, pin string) error {
 
 	if !utils.HashIsValid(pin, terminal.Pin) {
 
+		// Increase wrong pin count if the wrong pin was entered.
 		wrongPinCount := terminal.WrongPinCount + 1
 		_, _ = tQ.Where(query.Terminal.Serial.Eq(terminal.Serial)).Update(tQ.WrongPinCount, wrongPinCount)
 
