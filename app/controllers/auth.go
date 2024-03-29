@@ -68,7 +68,7 @@ func Login(c echo.Context) error {
 
 // Check that the terminal status, the terminal agent status
 // and the agent wallet status are all active.
-func ensureTerminalCanLogin(terminal *models.Terminal) error {
+func ensureTerminalCanLogin(terminal *model.Terminal) error {
 	if terminal.Status != state.ACTIVE {
 		return errors.New(fmt.Sprintf("Your terminal is currently %s", terminal.Status))
 	}

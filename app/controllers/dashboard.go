@@ -12,7 +12,7 @@ import (
 )
 
 func Dashboard(c echo.Context) error {
-	user := c.Get("user").(*models.User)
+	user := c.Get("user").(*model.User)
 
 	data := make(map[string]any, 4)
 

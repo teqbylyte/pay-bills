@@ -32,25 +32,25 @@ func Connect() {
 
 	g.UseDB(Db)
 
-	g.ApplyBasic(&models.Fee{},
-		&models.GeneralLedger{},
-		&models.GlTransaction{},
-		&models.KycLevel{},
-		&models.Loan{},
-		&models.Service{},
-		&models.ServiceProvider{},
-		&models.Terminal{},
-		&models.TerminalGroup{},
-		&models.Transactions{},
-		&models.User{},
-		&models.Wallet{},
-		&models.WalletTransaction{},
+	g.ApplyBasic(&model.Fee{},
+		&model.GeneralLedger{},
+		&model.GlTransaction{},
+		&model.KycLevel{},
+		&model.Loan{},
+		&model.Service{},
+		&model.ServiceProvider{},
+		&model.Terminal{},
+		&model.TerminalGroup{},
+		&model.Transactions{},
+		&model.User{},
+		&model.Wallet{},
+		&model.WalletTransaction{},
 	)
 
 	query.SetDefault(Db)
 
 	// Generate the code
-	//g.Execute()
+	g.Execute()
 }
 
 func postgresDsn() string {

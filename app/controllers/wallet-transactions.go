@@ -11,9 +11,9 @@ import (
 
 // WalletTransactions - Get auth user wallet transactions
 func WalletTransactions(c echo.Context) error {
-	user := c.Get("user").(*models.User)
+	user := c.Get("user").(*model.User)
 
-	transactions := make([]models.WalletTransaction, 0)
+	transactions := make([]model.WalletTransaction, 0)
 
 	wtQ := query.WalletTransaction
 	err := wtQ.Where(wtQ.WalletId.Eq(user.Wallet.ID)).

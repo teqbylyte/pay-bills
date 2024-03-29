@@ -11,9 +11,9 @@ import (
 
 // Transactions - Get auth user transactions
 func Transactions(c echo.Context) error {
-	user := c.Get("user").(*models.User)
+	user := c.Get("user").(*model.User)
 
-	transactions := make([]models.Transactions, 0)
+	transactions := make([]model.Transactions, 0)
 
 	tQ := query.Transactions
 	err := tQ.Where(tQ.UserId.Eq(user.ID)).

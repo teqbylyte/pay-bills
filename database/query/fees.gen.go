@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newFee(db *gorm.DB, opts ...gen.DOOption) fee {
 	_fee := fee{}
 
 	_fee.feeDo.UseDB(db, opts...)
-	_fee.feeDo.UseModel(&models.Fee{})
+	_fee.feeDo.UseModel(&model.Fee{})
 
 	tableName := _fee.feeDo.TableName()
 	_fee.ALL = field.NewAsterisk(tableName)
@@ -164,17 +164,17 @@ type IFeeDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IFeeDo
 	Unscoped() IFeeDo
-	Create(values ...*models.Fee) error
-	CreateInBatches(values []*models.Fee, batchSize int) error
-	Save(values ...*models.Fee) error
-	First() (*models.Fee, error)
-	Take() (*models.Fee, error)
-	Last() (*models.Fee, error)
-	Find() ([]*models.Fee, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Fee, err error)
-	FindInBatches(result *[]*models.Fee, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Fee) error
+	CreateInBatches(values []*model.Fee, batchSize int) error
+	Save(values ...*model.Fee) error
+	First() (*model.Fee, error)
+	Take() (*model.Fee, error)
+	Last() (*model.Fee, error)
+	Find() ([]*model.Fee, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Fee, err error)
+	FindInBatches(result *[]*model.Fee, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Fee) (info gen.ResultInfo, err error)
+	Delete(...*model.Fee) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -186,9 +186,9 @@ type IFeeDo interface {
 	Assign(attrs ...field.AssignExpr) IFeeDo
 	Joins(fields ...field.RelationField) IFeeDo
 	Preload(fields ...field.RelationField) IFeeDo
-	FirstOrInit() (*models.Fee, error)
-	FirstOrCreate() (*models.Fee, error)
-	FindByPage(offset int, limit int) (result []*models.Fee, count int64, err error)
+	FirstOrInit() (*model.Fee, error)
+	FirstOrCreate() (*model.Fee, error)
+	FindByPage(offset int, limit int) (result []*model.Fee, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IFeeDo
@@ -288,57 +288,57 @@ func (f feeDo) Unscoped() IFeeDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
-func (f feeDo) Create(values ...*models.Fee) error {
+func (f feeDo) Create(values ...*model.Fee) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Create(values)
 }
 
-func (f feeDo) CreateInBatches(values []*models.Fee, batchSize int) error {
+func (f feeDo) CreateInBatches(values []*model.Fee, batchSize int) error {
 	return f.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (f feeDo) Save(values ...*models.Fee) error {
+func (f feeDo) Save(values ...*model.Fee) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Save(values)
 }
 
-func (f feeDo) First() (*models.Fee, error) {
+func (f feeDo) First() (*model.Fee, error) {
 	if result, err := f.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Fee), nil
+		return result.(*model.Fee), nil
 	}
 }
 
-func (f feeDo) Take() (*models.Fee, error) {
+func (f feeDo) Take() (*model.Fee, error) {
 	if result, err := f.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Fee), nil
+		return result.(*model.Fee), nil
 	}
 }
 
-func (f feeDo) Last() (*models.Fee, error) {
+func (f feeDo) Last() (*model.Fee, error) {
 	if result, err := f.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Fee), nil
+		return result.(*model.Fee), nil
 	}
 }
 
-func (f feeDo) Find() ([]*models.Fee, error) {
+func (f feeDo) Find() ([]*model.Fee, error) {
 	result, err := f.DO.Find()
-	return result.([]*models.Fee), err
+	return result.([]*model.Fee), err
 }
 
-func (f feeDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Fee, err error) {
-	buf := make([]*models.Fee, 0, batchSize)
+func (f feeDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Fee, err error) {
+	buf := make([]*model.Fee, 0, batchSize)
 	err = f.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -346,7 +346,7 @@ func (f feeDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) 
 	return results, err
 }
 
-func (f feeDo) FindInBatches(result *[]*models.Fee, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (f feeDo) FindInBatches(result *[]*model.Fee, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -372,23 +372,23 @@ func (f feeDo) Preload(fields ...field.RelationField) IFeeDo {
 	return &f
 }
 
-func (f feeDo) FirstOrInit() (*models.Fee, error) {
+func (f feeDo) FirstOrInit() (*model.Fee, error) {
 	if result, err := f.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Fee), nil
+		return result.(*model.Fee), nil
 	}
 }
 
-func (f feeDo) FirstOrCreate() (*models.Fee, error) {
+func (f feeDo) FirstOrCreate() (*model.Fee, error) {
 	if result, err := f.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Fee), nil
+		return result.(*model.Fee), nil
 	}
 }
 
-func (f feeDo) FindByPage(offset int, limit int) (result []*models.Fee, count int64, err error) {
+func (f feeDo) FindByPage(offset int, limit int) (result []*model.Fee, count int64, err error) {
 	result, err = f.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -417,7 +417,7 @@ func (f feeDo) Scan(result interface{}) (err error) {
 	return f.DO.Scan(result)
 }
 
-func (f feeDo) Delete(models ...*models.Fee) (result gen.ResultInfo, err error) {
+func (f feeDo) Delete(models ...*model.Fee) (result gen.ResultInfo, err error) {
 	return f.DO.Delete(models)
 }
 

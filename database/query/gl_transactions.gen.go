@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newGlTransaction(db *gorm.DB, opts ...gen.DOOption) glTransaction {
 	_glTransaction := glTransaction{}
 
 	_glTransaction.glTransactionDo.UseDB(db, opts...)
-	_glTransaction.glTransactionDo.UseModel(&models.GlTransaction{})
+	_glTransaction.glTransactionDo.UseModel(&model.GlTransaction{})
 
 	tableName := _glTransaction.glTransactionDo.TableName()
 	_glTransaction.ALL = field.NewAsterisk(tableName)
@@ -140,17 +140,17 @@ type IGlTransactionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IGlTransactionDo
 	Unscoped() IGlTransactionDo
-	Create(values ...*models.GlTransaction) error
-	CreateInBatches(values []*models.GlTransaction, batchSize int) error
-	Save(values ...*models.GlTransaction) error
-	First() (*models.GlTransaction, error)
-	Take() (*models.GlTransaction, error)
-	Last() (*models.GlTransaction, error)
-	Find() ([]*models.GlTransaction, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GlTransaction, err error)
-	FindInBatches(result *[]*models.GlTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.GlTransaction) error
+	CreateInBatches(values []*model.GlTransaction, batchSize int) error
+	Save(values ...*model.GlTransaction) error
+	First() (*model.GlTransaction, error)
+	Take() (*model.GlTransaction, error)
+	Last() (*model.GlTransaction, error)
+	Find() ([]*model.GlTransaction, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GlTransaction, err error)
+	FindInBatches(result *[]*model.GlTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.GlTransaction) (info gen.ResultInfo, err error)
+	Delete(...*model.GlTransaction) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -162,9 +162,9 @@ type IGlTransactionDo interface {
 	Assign(attrs ...field.AssignExpr) IGlTransactionDo
 	Joins(fields ...field.RelationField) IGlTransactionDo
 	Preload(fields ...field.RelationField) IGlTransactionDo
-	FirstOrInit() (*models.GlTransaction, error)
-	FirstOrCreate() (*models.GlTransaction, error)
-	FindByPage(offset int, limit int) (result []*models.GlTransaction, count int64, err error)
+	FirstOrInit() (*model.GlTransaction, error)
+	FirstOrCreate() (*model.GlTransaction, error)
+	FindByPage(offset int, limit int) (result []*model.GlTransaction, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IGlTransactionDo
@@ -264,57 +264,57 @@ func (g glTransactionDo) Unscoped() IGlTransactionDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
-func (g glTransactionDo) Create(values ...*models.GlTransaction) error {
+func (g glTransactionDo) Create(values ...*model.GlTransaction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Create(values)
 }
 
-func (g glTransactionDo) CreateInBatches(values []*models.GlTransaction, batchSize int) error {
+func (g glTransactionDo) CreateInBatches(values []*model.GlTransaction, batchSize int) error {
 	return g.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (g glTransactionDo) Save(values ...*models.GlTransaction) error {
+func (g glTransactionDo) Save(values ...*model.GlTransaction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Save(values)
 }
 
-func (g glTransactionDo) First() (*models.GlTransaction, error) {
+func (g glTransactionDo) First() (*model.GlTransaction, error) {
 	if result, err := g.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GlTransaction), nil
+		return result.(*model.GlTransaction), nil
 	}
 }
 
-func (g glTransactionDo) Take() (*models.GlTransaction, error) {
+func (g glTransactionDo) Take() (*model.GlTransaction, error) {
 	if result, err := g.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GlTransaction), nil
+		return result.(*model.GlTransaction), nil
 	}
 }
 
-func (g glTransactionDo) Last() (*models.GlTransaction, error) {
+func (g glTransactionDo) Last() (*model.GlTransaction, error) {
 	if result, err := g.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GlTransaction), nil
+		return result.(*model.GlTransaction), nil
 	}
 }
 
-func (g glTransactionDo) Find() ([]*models.GlTransaction, error) {
+func (g glTransactionDo) Find() ([]*model.GlTransaction, error) {
 	result, err := g.DO.Find()
-	return result.([]*models.GlTransaction), err
+	return result.([]*model.GlTransaction), err
 }
 
-func (g glTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GlTransaction, err error) {
-	buf := make([]*models.GlTransaction, 0, batchSize)
+func (g glTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GlTransaction, err error) {
+	buf := make([]*model.GlTransaction, 0, batchSize)
 	err = g.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -322,7 +322,7 @@ func (g glTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch in
 	return results, err
 }
 
-func (g glTransactionDo) FindInBatches(result *[]*models.GlTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (g glTransactionDo) FindInBatches(result *[]*model.GlTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -348,23 +348,23 @@ func (g glTransactionDo) Preload(fields ...field.RelationField) IGlTransactionDo
 	return &g
 }
 
-func (g glTransactionDo) FirstOrInit() (*models.GlTransaction, error) {
+func (g glTransactionDo) FirstOrInit() (*model.GlTransaction, error) {
 	if result, err := g.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GlTransaction), nil
+		return result.(*model.GlTransaction), nil
 	}
 }
 
-func (g glTransactionDo) FirstOrCreate() (*models.GlTransaction, error) {
+func (g glTransactionDo) FirstOrCreate() (*model.GlTransaction, error) {
 	if result, err := g.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GlTransaction), nil
+		return result.(*model.GlTransaction), nil
 	}
 }
 
-func (g glTransactionDo) FindByPage(offset int, limit int) (result []*models.GlTransaction, count int64, err error) {
+func (g glTransactionDo) FindByPage(offset int, limit int) (result []*model.GlTransaction, count int64, err error) {
 	result, err = g.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -393,7 +393,7 @@ func (g glTransactionDo) Scan(result interface{}) (err error) {
 	return g.DO.Scan(result)
 }
 
-func (g glTransactionDo) Delete(models ...*models.GlTransaction) (result gen.ResultInfo, err error) {
+func (g glTransactionDo) Delete(models ...*model.GlTransaction) (result gen.ResultInfo, err error) {
 	return g.DO.Delete(models)
 }
 

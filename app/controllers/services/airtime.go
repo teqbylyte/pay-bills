@@ -3,7 +3,7 @@ package serviceCtrl
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	helper "martpay/app/helpers"
+	"martpay/app/helpers"
 	"martpay/app/models"
 	"martpay/app/request"
 	"martpay/app/services"
@@ -43,7 +43,7 @@ func PurchaseAirtime(c echo.Context) error {
 	info := fmt.Sprintf("Airtime purchase of %v for %s", data.Amount, data.Network)
 	charge := 0.0 // TODO: Get charge from terminal group
 
-	transaction := models.NewPendingTransaction(terminal, service, data.Amount, data.Amount+charge, reference, info,
+	transaction := model.NewPendingTransaction(terminal, service, data.Amount, data.Amount+charge, reference, info,
 		provider.GetName(), data.Phone, &data.TerminalInfo)
 	// Record transaction in the db.
 	_ = query.Transactions.Create(transaction)

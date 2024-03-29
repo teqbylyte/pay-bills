@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"martpay/app/request"
 	"martpay/app/utils"
 )
@@ -13,6 +14,12 @@ func (s Spout) GetName() string {
 }
 
 func (s Spout) PurchaseAirtime(txRef string, data request.NewTnxInterface) utils.MyResponse {
+	airtime := data.(request.AirtimeData)
+
+	fmt.Println(airtime)
+
+	// TODO: Call provider api to make purchase and return response on status.
+
 	return utils.MyResponse{
 		Success: true,
 		Message: "",

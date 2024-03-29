@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newTerminalGroup(db *gorm.DB, opts ...gen.DOOption) terminalGroup {
 	_terminalGroup := terminalGroup{}
 
 	_terminalGroup.terminalGroupDo.UseDB(db, opts...)
-	_terminalGroup.terminalGroupDo.UseModel(&models.TerminalGroup{})
+	_terminalGroup.terminalGroupDo.UseModel(&model.TerminalGroup{})
 
 	tableName := _terminalGroup.terminalGroupDo.TableName()
 	_terminalGroup.ALL = field.NewAsterisk(tableName)
@@ -132,17 +132,17 @@ type ITerminalGroupDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ITerminalGroupDo
 	Unscoped() ITerminalGroupDo
-	Create(values ...*models.TerminalGroup) error
-	CreateInBatches(values []*models.TerminalGroup, batchSize int) error
-	Save(values ...*models.TerminalGroup) error
-	First() (*models.TerminalGroup, error)
-	Take() (*models.TerminalGroup, error)
-	Last() (*models.TerminalGroup, error)
-	Find() ([]*models.TerminalGroup, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.TerminalGroup, err error)
-	FindInBatches(result *[]*models.TerminalGroup, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.TerminalGroup) error
+	CreateInBatches(values []*model.TerminalGroup, batchSize int) error
+	Save(values ...*model.TerminalGroup) error
+	First() (*model.TerminalGroup, error)
+	Take() (*model.TerminalGroup, error)
+	Last() (*model.TerminalGroup, error)
+	Find() ([]*model.TerminalGroup, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.TerminalGroup, err error)
+	FindInBatches(result *[]*model.TerminalGroup, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.TerminalGroup) (info gen.ResultInfo, err error)
+	Delete(...*model.TerminalGroup) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -154,9 +154,9 @@ type ITerminalGroupDo interface {
 	Assign(attrs ...field.AssignExpr) ITerminalGroupDo
 	Joins(fields ...field.RelationField) ITerminalGroupDo
 	Preload(fields ...field.RelationField) ITerminalGroupDo
-	FirstOrInit() (*models.TerminalGroup, error)
-	FirstOrCreate() (*models.TerminalGroup, error)
-	FindByPage(offset int, limit int) (result []*models.TerminalGroup, count int64, err error)
+	FirstOrInit() (*model.TerminalGroup, error)
+	FirstOrCreate() (*model.TerminalGroup, error)
+	FindByPage(offset int, limit int) (result []*model.TerminalGroup, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ITerminalGroupDo
@@ -256,57 +256,57 @@ func (t terminalGroupDo) Unscoped() ITerminalGroupDo {
 	return t.withDO(t.DO.Unscoped())
 }
 
-func (t terminalGroupDo) Create(values ...*models.TerminalGroup) error {
+func (t terminalGroupDo) Create(values ...*model.TerminalGroup) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Create(values)
 }
 
-func (t terminalGroupDo) CreateInBatches(values []*models.TerminalGroup, batchSize int) error {
+func (t terminalGroupDo) CreateInBatches(values []*model.TerminalGroup, batchSize int) error {
 	return t.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (t terminalGroupDo) Save(values ...*models.TerminalGroup) error {
+func (t terminalGroupDo) Save(values ...*model.TerminalGroup) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Save(values)
 }
 
-func (t terminalGroupDo) First() (*models.TerminalGroup, error) {
+func (t terminalGroupDo) First() (*model.TerminalGroup, error) {
 	if result, err := t.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.TerminalGroup), nil
+		return result.(*model.TerminalGroup), nil
 	}
 }
 
-func (t terminalGroupDo) Take() (*models.TerminalGroup, error) {
+func (t terminalGroupDo) Take() (*model.TerminalGroup, error) {
 	if result, err := t.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.TerminalGroup), nil
+		return result.(*model.TerminalGroup), nil
 	}
 }
 
-func (t terminalGroupDo) Last() (*models.TerminalGroup, error) {
+func (t terminalGroupDo) Last() (*model.TerminalGroup, error) {
 	if result, err := t.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.TerminalGroup), nil
+		return result.(*model.TerminalGroup), nil
 	}
 }
 
-func (t terminalGroupDo) Find() ([]*models.TerminalGroup, error) {
+func (t terminalGroupDo) Find() ([]*model.TerminalGroup, error) {
 	result, err := t.DO.Find()
-	return result.([]*models.TerminalGroup), err
+	return result.([]*model.TerminalGroup), err
 }
 
-func (t terminalGroupDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.TerminalGroup, err error) {
-	buf := make([]*models.TerminalGroup, 0, batchSize)
+func (t terminalGroupDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.TerminalGroup, err error) {
+	buf := make([]*model.TerminalGroup, 0, batchSize)
 	err = t.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -314,7 +314,7 @@ func (t terminalGroupDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch in
 	return results, err
 }
 
-func (t terminalGroupDo) FindInBatches(result *[]*models.TerminalGroup, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (t terminalGroupDo) FindInBatches(result *[]*model.TerminalGroup, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return t.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -340,23 +340,23 @@ func (t terminalGroupDo) Preload(fields ...field.RelationField) ITerminalGroupDo
 	return &t
 }
 
-func (t terminalGroupDo) FirstOrInit() (*models.TerminalGroup, error) {
+func (t terminalGroupDo) FirstOrInit() (*model.TerminalGroup, error) {
 	if result, err := t.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.TerminalGroup), nil
+		return result.(*model.TerminalGroup), nil
 	}
 }
 
-func (t terminalGroupDo) FirstOrCreate() (*models.TerminalGroup, error) {
+func (t terminalGroupDo) FirstOrCreate() (*model.TerminalGroup, error) {
 	if result, err := t.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.TerminalGroup), nil
+		return result.(*model.TerminalGroup), nil
 	}
 }
 
-func (t terminalGroupDo) FindByPage(offset int, limit int) (result []*models.TerminalGroup, count int64, err error) {
+func (t terminalGroupDo) FindByPage(offset int, limit int) (result []*model.TerminalGroup, count int64, err error) {
 	result, err = t.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -385,7 +385,7 @@ func (t terminalGroupDo) Scan(result interface{}) (err error) {
 	return t.DO.Scan(result)
 }
 
-func (t terminalGroupDo) Delete(models ...*models.TerminalGroup) (result gen.ResultInfo, err error) {
+func (t terminalGroupDo) Delete(models ...*model.TerminalGroup) (result gen.ResultInfo, err error) {
 	return t.DO.Delete(models)
 }
 

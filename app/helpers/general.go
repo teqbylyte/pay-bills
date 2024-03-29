@@ -11,7 +11,7 @@ import (
 )
 
 // AuthTerminal - Get the terminal making the request from the deviceId set in the request header.
-func AuthTerminal(c echo.Context) *models.Terminal {
+func AuthTerminal(c echo.Context) *model.Terminal {
 	serial := c.Request().Header.Get("deviceId")
 	tQ := query.Terminal
 	terminal, _ := tQ.Where(query.Terminal.Serial.Eq(serial)).Preload(tQ.User.Wallet).First()
@@ -19,7 +19,7 @@ func AuthTerminal(c echo.Context) *models.Terminal {
 	return terminal
 }
 
-func CheckTerminalPin(terminal *models.Terminal, pin string) error {
+func CheckTerminalPin(terminal *model.Terminal, pin string) error {
 	if terminal.Pin == "0000" {
 		if pin != terminal.Pin {
 			return errors.New("Incorrect pin.")
@@ -49,7 +49,7 @@ func CheckTerminalPin(terminal *models.Terminal, pin string) error {
 	return nil
 }
 
-func CheckTerminalAdminPin(terminal *models.Terminal, pin string) error {
+func CheckTerminalAdminPin(terminal *model.Terminal, pin string) error {
 	if terminal.Pin == "0000" {
 		if pin != terminal.Pin {
 			return errors.New("Incorrect admin pin.")

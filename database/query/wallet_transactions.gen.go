@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newWalletTransaction(db *gorm.DB, opts ...gen.DOOption) walletTransaction {
 	_walletTransaction := walletTransaction{}
 
 	_walletTransaction.walletTransactionDo.UseDB(db, opts...)
-	_walletTransaction.walletTransactionDo.UseModel(&models.WalletTransaction{})
+	_walletTransaction.walletTransactionDo.UseModel(&model.WalletTransaction{})
 
 	tableName := _walletTransaction.walletTransactionDo.TableName()
 	_walletTransaction.ALL = field.NewAsterisk(tableName)
@@ -164,17 +164,17 @@ type IWalletTransactionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IWalletTransactionDo
 	Unscoped() IWalletTransactionDo
-	Create(values ...*models.WalletTransaction) error
-	CreateInBatches(values []*models.WalletTransaction, batchSize int) error
-	Save(values ...*models.WalletTransaction) error
-	First() (*models.WalletTransaction, error)
-	Take() (*models.WalletTransaction, error)
-	Last() (*models.WalletTransaction, error)
-	Find() ([]*models.WalletTransaction, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.WalletTransaction, err error)
-	FindInBatches(result *[]*models.WalletTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.WalletTransaction) error
+	CreateInBatches(values []*model.WalletTransaction, batchSize int) error
+	Save(values ...*model.WalletTransaction) error
+	First() (*model.WalletTransaction, error)
+	Take() (*model.WalletTransaction, error)
+	Last() (*model.WalletTransaction, error)
+	Find() ([]*model.WalletTransaction, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.WalletTransaction, err error)
+	FindInBatches(result *[]*model.WalletTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.WalletTransaction) (info gen.ResultInfo, err error)
+	Delete(...*model.WalletTransaction) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -186,9 +186,9 @@ type IWalletTransactionDo interface {
 	Assign(attrs ...field.AssignExpr) IWalletTransactionDo
 	Joins(fields ...field.RelationField) IWalletTransactionDo
 	Preload(fields ...field.RelationField) IWalletTransactionDo
-	FirstOrInit() (*models.WalletTransaction, error)
-	FirstOrCreate() (*models.WalletTransaction, error)
-	FindByPage(offset int, limit int) (result []*models.WalletTransaction, count int64, err error)
+	FirstOrInit() (*model.WalletTransaction, error)
+	FirstOrCreate() (*model.WalletTransaction, error)
+	FindByPage(offset int, limit int) (result []*model.WalletTransaction, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IWalletTransactionDo
@@ -288,57 +288,57 @@ func (w walletTransactionDo) Unscoped() IWalletTransactionDo {
 	return w.withDO(w.DO.Unscoped())
 }
 
-func (w walletTransactionDo) Create(values ...*models.WalletTransaction) error {
+func (w walletTransactionDo) Create(values ...*model.WalletTransaction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return w.DO.Create(values)
 }
 
-func (w walletTransactionDo) CreateInBatches(values []*models.WalletTransaction, batchSize int) error {
+func (w walletTransactionDo) CreateInBatches(values []*model.WalletTransaction, batchSize int) error {
 	return w.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (w walletTransactionDo) Save(values ...*models.WalletTransaction) error {
+func (w walletTransactionDo) Save(values ...*model.WalletTransaction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return w.DO.Save(values)
 }
 
-func (w walletTransactionDo) First() (*models.WalletTransaction, error) {
+func (w walletTransactionDo) First() (*model.WalletTransaction, error) {
 	if result, err := w.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.WalletTransaction), nil
+		return result.(*model.WalletTransaction), nil
 	}
 }
 
-func (w walletTransactionDo) Take() (*models.WalletTransaction, error) {
+func (w walletTransactionDo) Take() (*model.WalletTransaction, error) {
 	if result, err := w.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.WalletTransaction), nil
+		return result.(*model.WalletTransaction), nil
 	}
 }
 
-func (w walletTransactionDo) Last() (*models.WalletTransaction, error) {
+func (w walletTransactionDo) Last() (*model.WalletTransaction, error) {
 	if result, err := w.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.WalletTransaction), nil
+		return result.(*model.WalletTransaction), nil
 	}
 }
 
-func (w walletTransactionDo) Find() ([]*models.WalletTransaction, error) {
+func (w walletTransactionDo) Find() ([]*model.WalletTransaction, error) {
 	result, err := w.DO.Find()
-	return result.([]*models.WalletTransaction), err
+	return result.([]*model.WalletTransaction), err
 }
 
-func (w walletTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.WalletTransaction, err error) {
-	buf := make([]*models.WalletTransaction, 0, batchSize)
+func (w walletTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.WalletTransaction, err error) {
+	buf := make([]*model.WalletTransaction, 0, batchSize)
 	err = w.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -346,7 +346,7 @@ func (w walletTransactionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batc
 	return results, err
 }
 
-func (w walletTransactionDo) FindInBatches(result *[]*models.WalletTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (w walletTransactionDo) FindInBatches(result *[]*model.WalletTransaction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return w.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -372,23 +372,23 @@ func (w walletTransactionDo) Preload(fields ...field.RelationField) IWalletTrans
 	return &w
 }
 
-func (w walletTransactionDo) FirstOrInit() (*models.WalletTransaction, error) {
+func (w walletTransactionDo) FirstOrInit() (*model.WalletTransaction, error) {
 	if result, err := w.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.WalletTransaction), nil
+		return result.(*model.WalletTransaction), nil
 	}
 }
 
-func (w walletTransactionDo) FirstOrCreate() (*models.WalletTransaction, error) {
+func (w walletTransactionDo) FirstOrCreate() (*model.WalletTransaction, error) {
 	if result, err := w.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.WalletTransaction), nil
+		return result.(*model.WalletTransaction), nil
 	}
 }
 
-func (w walletTransactionDo) FindByPage(offset int, limit int) (result []*models.WalletTransaction, count int64, err error) {
+func (w walletTransactionDo) FindByPage(offset int, limit int) (result []*model.WalletTransaction, count int64, err error) {
 	result, err = w.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -417,7 +417,7 @@ func (w walletTransactionDo) Scan(result interface{}) (err error) {
 	return w.DO.Scan(result)
 }
 
-func (w walletTransactionDo) Delete(models ...*models.WalletTransaction) (result gen.ResultInfo, err error) {
+func (w walletTransactionDo) Delete(models ...*model.WalletTransaction) (result gen.ResultInfo, err error) {
 	return w.DO.Delete(models)
 }
 

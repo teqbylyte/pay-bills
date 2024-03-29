@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	_transactions := transactions{}
 
 	_transactions.transactionsDo.UseDB(db, opts...)
-	_transactions.transactionsDo.UseModel(&models.Transactions{})
+	_transactions.transactionsDo.UseModel(&model.Transactions{})
 
 	tableName := _transactions.transactionsDo.TableName()
 	_transactions.ALL = field.NewAsterisk(tableName)
@@ -55,11 +55,11 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	_transactions.Service = transactionsBelongsToService{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("Service", "models.Service"),
+		RelationField: field.NewRelation("Service", "model.Service"),
 		Provider: struct {
 			field.RelationField
 		}{
-			RelationField: field.NewRelation("Service.Provider", "models.ServiceProvider"),
+			RelationField: field.NewRelation("Service.Provider", "model.ServiceProvider"),
 		},
 	}
 
@@ -230,17 +230,17 @@ func (a transactionsBelongsToService) Session(session *gorm.Session) *transactio
 	return &a
 }
 
-func (a transactionsBelongsToService) Model(m *models.Transactions) *transactionsBelongsToServiceTx {
+func (a transactionsBelongsToService) Model(m *model.Transactions) *transactionsBelongsToServiceTx {
 	return &transactionsBelongsToServiceTx{a.db.Model(m).Association(a.Name())}
 }
 
 type transactionsBelongsToServiceTx struct{ tx *gorm.Association }
 
-func (a transactionsBelongsToServiceTx) Find() (result *models.Service, err error) {
+func (a transactionsBelongsToServiceTx) Find() (result *model.Service, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a transactionsBelongsToServiceTx) Append(values ...*models.Service) (err error) {
+func (a transactionsBelongsToServiceTx) Append(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -248,7 +248,7 @@ func (a transactionsBelongsToServiceTx) Append(values ...*models.Service) (err e
 	return a.tx.Append(targetValues...)
 }
 
-func (a transactionsBelongsToServiceTx) Replace(values ...*models.Service) (err error) {
+func (a transactionsBelongsToServiceTx) Replace(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -256,7 +256,7 @@ func (a transactionsBelongsToServiceTx) Replace(values ...*models.Service) (err 
 	return a.tx.Replace(targetValues...)
 }
 
-func (a transactionsBelongsToServiceTx) Delete(values ...*models.Service) (err error) {
+func (a transactionsBelongsToServiceTx) Delete(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -303,17 +303,17 @@ type ITransactionsDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ITransactionsDo
 	Unscoped() ITransactionsDo
-	Create(values ...*models.Transactions) error
-	CreateInBatches(values []*models.Transactions, batchSize int) error
-	Save(values ...*models.Transactions) error
-	First() (*models.Transactions, error)
-	Take() (*models.Transactions, error)
-	Last() (*models.Transactions, error)
-	Find() ([]*models.Transactions, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Transactions, err error)
-	FindInBatches(result *[]*models.Transactions, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Transactions) error
+	CreateInBatches(values []*model.Transactions, batchSize int) error
+	Save(values ...*model.Transactions) error
+	First() (*model.Transactions, error)
+	Take() (*model.Transactions, error)
+	Last() (*model.Transactions, error)
+	Find() ([]*model.Transactions, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Transactions, err error)
+	FindInBatches(result *[]*model.Transactions, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Transactions) (info gen.ResultInfo, err error)
+	Delete(...*model.Transactions) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -325,9 +325,9 @@ type ITransactionsDo interface {
 	Assign(attrs ...field.AssignExpr) ITransactionsDo
 	Joins(fields ...field.RelationField) ITransactionsDo
 	Preload(fields ...field.RelationField) ITransactionsDo
-	FirstOrInit() (*models.Transactions, error)
-	FirstOrCreate() (*models.Transactions, error)
-	FindByPage(offset int, limit int) (result []*models.Transactions, count int64, err error)
+	FirstOrInit() (*model.Transactions, error)
+	FirstOrCreate() (*model.Transactions, error)
+	FindByPage(offset int, limit int) (result []*model.Transactions, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ITransactionsDo
@@ -427,57 +427,57 @@ func (t transactionsDo) Unscoped() ITransactionsDo {
 	return t.withDO(t.DO.Unscoped())
 }
 
-func (t transactionsDo) Create(values ...*models.Transactions) error {
+func (t transactionsDo) Create(values ...*model.Transactions) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Create(values)
 }
 
-func (t transactionsDo) CreateInBatches(values []*models.Transactions, batchSize int) error {
+func (t transactionsDo) CreateInBatches(values []*model.Transactions, batchSize int) error {
 	return t.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (t transactionsDo) Save(values ...*models.Transactions) error {
+func (t transactionsDo) Save(values ...*model.Transactions) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Save(values)
 }
 
-func (t transactionsDo) First() (*models.Transactions, error) {
+func (t transactionsDo) First() (*model.Transactions, error) {
 	if result, err := t.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Transactions), nil
+		return result.(*model.Transactions), nil
 	}
 }
 
-func (t transactionsDo) Take() (*models.Transactions, error) {
+func (t transactionsDo) Take() (*model.Transactions, error) {
 	if result, err := t.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Transactions), nil
+		return result.(*model.Transactions), nil
 	}
 }
 
-func (t transactionsDo) Last() (*models.Transactions, error) {
+func (t transactionsDo) Last() (*model.Transactions, error) {
 	if result, err := t.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Transactions), nil
+		return result.(*model.Transactions), nil
 	}
 }
 
-func (t transactionsDo) Find() ([]*models.Transactions, error) {
+func (t transactionsDo) Find() ([]*model.Transactions, error) {
 	result, err := t.DO.Find()
-	return result.([]*models.Transactions), err
+	return result.([]*model.Transactions), err
 }
 
-func (t transactionsDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Transactions, err error) {
-	buf := make([]*models.Transactions, 0, batchSize)
+func (t transactionsDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Transactions, err error) {
+	buf := make([]*model.Transactions, 0, batchSize)
 	err = t.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -485,7 +485,7 @@ func (t transactionsDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int
 	return results, err
 }
 
-func (t transactionsDo) FindInBatches(result *[]*models.Transactions, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (t transactionsDo) FindInBatches(result *[]*model.Transactions, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return t.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -511,23 +511,23 @@ func (t transactionsDo) Preload(fields ...field.RelationField) ITransactionsDo {
 	return &t
 }
 
-func (t transactionsDo) FirstOrInit() (*models.Transactions, error) {
+func (t transactionsDo) FirstOrInit() (*model.Transactions, error) {
 	if result, err := t.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Transactions), nil
+		return result.(*model.Transactions), nil
 	}
 }
 
-func (t transactionsDo) FirstOrCreate() (*models.Transactions, error) {
+func (t transactionsDo) FirstOrCreate() (*model.Transactions, error) {
 	if result, err := t.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Transactions), nil
+		return result.(*model.Transactions), nil
 	}
 }
 
-func (t transactionsDo) FindByPage(offset int, limit int) (result []*models.Transactions, count int64, err error) {
+func (t transactionsDo) FindByPage(offset int, limit int) (result []*model.Transactions, count int64, err error) {
 	result, err = t.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -556,7 +556,7 @@ func (t transactionsDo) Scan(result interface{}) (err error) {
 	return t.DO.Scan(result)
 }
 
-func (t transactionsDo) Delete(models ...*models.Transactions) (result gen.ResultInfo, err error) {
+func (t transactionsDo) Delete(models ...*model.Transactions) (result gen.ResultInfo, err error) {
 	return t.DO.Delete(models)
 }
 

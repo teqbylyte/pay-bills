@@ -9,8 +9,8 @@ import (
 )
 
 func ProcessWalletDebit(
-	wallet *models.Wallet,
-	service *models.Service,
+	wallet *model.Wallet,
+	service *model.Service,
 	amount float64,
 	charge float64,
 	reference string,
@@ -44,8 +44,8 @@ func ProcessWalletDebit(
 
 // DebitWallet - Debit the wallet for the service.
 func DebitWallet(
-	wallet *models.Wallet,
-	service *models.Service,
+	wallet *model.Wallet,
+	service *model.Service,
 	amount float64,
 	transType enums.TransType,
 	reference string,
@@ -62,7 +62,7 @@ func DebitWallet(
 			return err
 		}
 
-		err = tx.WalletTransaction.Create(&models.WalletTransaction{
+		err = tx.WalletTransaction.Create(&model.WalletTransaction{
 			WalletId:    wallet.ID,
 			ProductId:   service.ID,
 			Type:        transType,
@@ -89,8 +89,8 @@ func DebitWallet(
 
 // CreditWallet - Credit the wallet for the service.
 func CreditWallet(
-	wallet *models.Wallet,
-	service *models.Service,
+	wallet *model.Wallet,
+	service *model.Service,
 	amount float64,
 	transType enums.TransType,
 	reference string,
@@ -106,7 +106,7 @@ func CreditWallet(
 			return err
 		}
 
-		err = tx.WalletTransaction.Create(&models.WalletTransaction{
+		err = tx.WalletTransaction.Create(&model.WalletTransaction{
 			WalletId:    wallet.ID,
 			ProductId:   service.ID,
 			Type:        transType,

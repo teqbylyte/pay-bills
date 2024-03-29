@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newGeneralLedger(db *gorm.DB, opts ...gen.DOOption) generalLedger {
 	_generalLedger := generalLedger{}
 
 	_generalLedger.generalLedgerDo.UseDB(db, opts...)
-	_generalLedger.generalLedgerDo.UseModel(&models.GeneralLedger{})
+	_generalLedger.generalLedgerDo.UseModel(&model.GeneralLedger{})
 
 	tableName := _generalLedger.generalLedgerDo.TableName()
 	_generalLedger.ALL = field.NewAsterisk(tableName)
@@ -132,17 +132,17 @@ type IGeneralLedgerDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IGeneralLedgerDo
 	Unscoped() IGeneralLedgerDo
-	Create(values ...*models.GeneralLedger) error
-	CreateInBatches(values []*models.GeneralLedger, batchSize int) error
-	Save(values ...*models.GeneralLedger) error
-	First() (*models.GeneralLedger, error)
-	Take() (*models.GeneralLedger, error)
-	Last() (*models.GeneralLedger, error)
-	Find() ([]*models.GeneralLedger, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GeneralLedger, err error)
-	FindInBatches(result *[]*models.GeneralLedger, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.GeneralLedger) error
+	CreateInBatches(values []*model.GeneralLedger, batchSize int) error
+	Save(values ...*model.GeneralLedger) error
+	First() (*model.GeneralLedger, error)
+	Take() (*model.GeneralLedger, error)
+	Last() (*model.GeneralLedger, error)
+	Find() ([]*model.GeneralLedger, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GeneralLedger, err error)
+	FindInBatches(result *[]*model.GeneralLedger, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.GeneralLedger) (info gen.ResultInfo, err error)
+	Delete(...*model.GeneralLedger) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -154,9 +154,9 @@ type IGeneralLedgerDo interface {
 	Assign(attrs ...field.AssignExpr) IGeneralLedgerDo
 	Joins(fields ...field.RelationField) IGeneralLedgerDo
 	Preload(fields ...field.RelationField) IGeneralLedgerDo
-	FirstOrInit() (*models.GeneralLedger, error)
-	FirstOrCreate() (*models.GeneralLedger, error)
-	FindByPage(offset int, limit int) (result []*models.GeneralLedger, count int64, err error)
+	FirstOrInit() (*model.GeneralLedger, error)
+	FirstOrCreate() (*model.GeneralLedger, error)
+	FindByPage(offset int, limit int) (result []*model.GeneralLedger, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IGeneralLedgerDo
@@ -256,57 +256,57 @@ func (g generalLedgerDo) Unscoped() IGeneralLedgerDo {
 	return g.withDO(g.DO.Unscoped())
 }
 
-func (g generalLedgerDo) Create(values ...*models.GeneralLedger) error {
+func (g generalLedgerDo) Create(values ...*model.GeneralLedger) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Create(values)
 }
 
-func (g generalLedgerDo) CreateInBatches(values []*models.GeneralLedger, batchSize int) error {
+func (g generalLedgerDo) CreateInBatches(values []*model.GeneralLedger, batchSize int) error {
 	return g.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (g generalLedgerDo) Save(values ...*models.GeneralLedger) error {
+func (g generalLedgerDo) Save(values ...*model.GeneralLedger) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return g.DO.Save(values)
 }
 
-func (g generalLedgerDo) First() (*models.GeneralLedger, error) {
+func (g generalLedgerDo) First() (*model.GeneralLedger, error) {
 	if result, err := g.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GeneralLedger), nil
+		return result.(*model.GeneralLedger), nil
 	}
 }
 
-func (g generalLedgerDo) Take() (*models.GeneralLedger, error) {
+func (g generalLedgerDo) Take() (*model.GeneralLedger, error) {
 	if result, err := g.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GeneralLedger), nil
+		return result.(*model.GeneralLedger), nil
 	}
 }
 
-func (g generalLedgerDo) Last() (*models.GeneralLedger, error) {
+func (g generalLedgerDo) Last() (*model.GeneralLedger, error) {
 	if result, err := g.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GeneralLedger), nil
+		return result.(*model.GeneralLedger), nil
 	}
 }
 
-func (g generalLedgerDo) Find() ([]*models.GeneralLedger, error) {
+func (g generalLedgerDo) Find() ([]*model.GeneralLedger, error) {
 	result, err := g.DO.Find()
-	return result.([]*models.GeneralLedger), err
+	return result.([]*model.GeneralLedger), err
 }
 
-func (g generalLedgerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.GeneralLedger, err error) {
-	buf := make([]*models.GeneralLedger, 0, batchSize)
+func (g generalLedgerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.GeneralLedger, err error) {
+	buf := make([]*model.GeneralLedger, 0, batchSize)
 	err = g.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -314,7 +314,7 @@ func (g generalLedgerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch in
 	return results, err
 }
 
-func (g generalLedgerDo) FindInBatches(result *[]*models.GeneralLedger, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (g generalLedgerDo) FindInBatches(result *[]*model.GeneralLedger, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return g.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -340,23 +340,23 @@ func (g generalLedgerDo) Preload(fields ...field.RelationField) IGeneralLedgerDo
 	return &g
 }
 
-func (g generalLedgerDo) FirstOrInit() (*models.GeneralLedger, error) {
+func (g generalLedgerDo) FirstOrInit() (*model.GeneralLedger, error) {
 	if result, err := g.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GeneralLedger), nil
+		return result.(*model.GeneralLedger), nil
 	}
 }
 
-func (g generalLedgerDo) FirstOrCreate() (*models.GeneralLedger, error) {
+func (g generalLedgerDo) FirstOrCreate() (*model.GeneralLedger, error) {
 	if result, err := g.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.GeneralLedger), nil
+		return result.(*model.GeneralLedger), nil
 	}
 }
 
-func (g generalLedgerDo) FindByPage(offset int, limit int) (result []*models.GeneralLedger, count int64, err error) {
+func (g generalLedgerDo) FindByPage(offset int, limit int) (result []*model.GeneralLedger, count int64, err error) {
 	result, err = g.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -385,7 +385,7 @@ func (g generalLedgerDo) Scan(result interface{}) (err error) {
 	return g.DO.Scan(result)
 }
 
-func (g generalLedgerDo) Delete(models ...*models.GeneralLedger) (result gen.ResultInfo, err error) {
+func (g generalLedgerDo) Delete(models ...*model.GeneralLedger) (result gen.ResultInfo, err error) {
 	return g.DO.Delete(models)
 }
 

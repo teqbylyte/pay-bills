@@ -10,9 +10,9 @@ import (
 
 // ProcessPurchase - Process the purchase for the specified service with the provider call.
 func ProcessPurchase(
-	terminal *models.Terminal,
-	service *models.Service,
-	tnx *models.Transactions,
+	terminal *model.Terminal,
+	service *model.Service,
+	tnx *model.Transactions,
 	data request.NewTnxInterface,
 	provider services.ProviderFn,
 ) (int, utils.MyResponse) {

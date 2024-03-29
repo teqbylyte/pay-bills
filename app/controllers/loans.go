@@ -14,7 +14,7 @@ import (
 )
 
 func GetLoans(c echo.Context) error {
-	user := c.Get("user").(*models.User)
+	user := c.Get("user").(*model.User)
 
 	var loans []dto.LoanDto
 
@@ -25,7 +25,7 @@ func GetLoans(c echo.Context) error {
 }
 
 func CreateLoan(c echo.Context) error {
-	agent := c.Get("user").(*models.User)
+	agent := c.Get("user").(*model.User)
 	terminal := helper.AuthTerminal(c)
 
 	data := new(request.LoanData)
@@ -48,7 +48,7 @@ func CreateLoan(c echo.Context) error {
 	reference := helper.NewTnxRef()
 	info := "Loan request"
 
-	transaction := models.NewPendingTransaction(terminal, service, data.Amount, charge, reference, info,
+	transaction := model.NewPendingTransaction(terminal, service, data.Amount, charge, reference, info,
 		"INTERNAL", "", &data.TerminalInfo)
 
 	// TODO: Check if loan can be created. (1) Has super agent (2) Does not have pending loan
@@ -58,7 +58,7 @@ func CreateLoan(c echo.Context) error {
 			return err
 		}
 
-		loan := models.Loan{
+		loan := model.Loan{
 			UserId:        agent.ID,
 			TransactionId: transaction.ID,
 			Amount:        data.Amount,

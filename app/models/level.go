@@ -1,4 +1,4 @@
-package models
+package model
 
 type KycLevel struct {
 	BaseModel

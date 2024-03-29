@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newWallet(db *gorm.DB, opts ...gen.DOOption) wallet {
 	_wallet := wallet{}
 
 	_wallet.walletDo.UseDB(db, opts...)
-	_wallet.walletDo.UseModel(&models.Wallet{})
+	_wallet.walletDo.UseModel(&model.Wallet{})
 
 	tableName := _wallet.walletDo.TableName()
 	_wallet.ALL = field.NewAsterisk(tableName)
@@ -156,17 +156,17 @@ type IWalletDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IWalletDo
 	Unscoped() IWalletDo
-	Create(values ...*models.Wallet) error
-	CreateInBatches(values []*models.Wallet, batchSize int) error
-	Save(values ...*models.Wallet) error
-	First() (*models.Wallet, error)
-	Take() (*models.Wallet, error)
-	Last() (*models.Wallet, error)
-	Find() ([]*models.Wallet, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Wallet, err error)
-	FindInBatches(result *[]*models.Wallet, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Wallet) error
+	CreateInBatches(values []*model.Wallet, batchSize int) error
+	Save(values ...*model.Wallet) error
+	First() (*model.Wallet, error)
+	Take() (*model.Wallet, error)
+	Last() (*model.Wallet, error)
+	Find() ([]*model.Wallet, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Wallet, err error)
+	FindInBatches(result *[]*model.Wallet, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Wallet) (info gen.ResultInfo, err error)
+	Delete(...*model.Wallet) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -178,9 +178,9 @@ type IWalletDo interface {
 	Assign(attrs ...field.AssignExpr) IWalletDo
 	Joins(fields ...field.RelationField) IWalletDo
 	Preload(fields ...field.RelationField) IWalletDo
-	FirstOrInit() (*models.Wallet, error)
-	FirstOrCreate() (*models.Wallet, error)
-	FindByPage(offset int, limit int) (result []*models.Wallet, count int64, err error)
+	FirstOrInit() (*model.Wallet, error)
+	FirstOrCreate() (*model.Wallet, error)
+	FindByPage(offset int, limit int) (result []*model.Wallet, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IWalletDo
@@ -280,57 +280,57 @@ func (w walletDo) Unscoped() IWalletDo {
 	return w.withDO(w.DO.Unscoped())
 }
 
-func (w walletDo) Create(values ...*models.Wallet) error {
+func (w walletDo) Create(values ...*model.Wallet) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return w.DO.Create(values)
 }
 
-func (w walletDo) CreateInBatches(values []*models.Wallet, batchSize int) error {
+func (w walletDo) CreateInBatches(values []*model.Wallet, batchSize int) error {
 	return w.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (w walletDo) Save(values ...*models.Wallet) error {
+func (w walletDo) Save(values ...*model.Wallet) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return w.DO.Save(values)
 }
 
-func (w walletDo) First() (*models.Wallet, error) {
+func (w walletDo) First() (*model.Wallet, error) {
 	if result, err := w.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Wallet), nil
+		return result.(*model.Wallet), nil
 	}
 }
 
-func (w walletDo) Take() (*models.Wallet, error) {
+func (w walletDo) Take() (*model.Wallet, error) {
 	if result, err := w.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Wallet), nil
+		return result.(*model.Wallet), nil
 	}
 }
 
-func (w walletDo) Last() (*models.Wallet, error) {
+func (w walletDo) Last() (*model.Wallet, error) {
 	if result, err := w.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Wallet), nil
+		return result.(*model.Wallet), nil
 	}
 }
 
-func (w walletDo) Find() ([]*models.Wallet, error) {
+func (w walletDo) Find() ([]*model.Wallet, error) {
 	result, err := w.DO.Find()
-	return result.([]*models.Wallet), err
+	return result.([]*model.Wallet), err
 }
 
-func (w walletDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Wallet, err error) {
-	buf := make([]*models.Wallet, 0, batchSize)
+func (w walletDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Wallet, err error) {
+	buf := make([]*model.Wallet, 0, batchSize)
 	err = w.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -338,7 +338,7 @@ func (w walletDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) erro
 	return results, err
 }
 
-func (w walletDo) FindInBatches(result *[]*models.Wallet, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (w walletDo) FindInBatches(result *[]*model.Wallet, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return w.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -364,23 +364,23 @@ func (w walletDo) Preload(fields ...field.RelationField) IWalletDo {
 	return &w
 }
 
-func (w walletDo) FirstOrInit() (*models.Wallet, error) {
+func (w walletDo) FirstOrInit() (*model.Wallet, error) {
 	if result, err := w.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Wallet), nil
+		return result.(*model.Wallet), nil
 	}
 }
 
-func (w walletDo) FirstOrCreate() (*models.Wallet, error) {
+func (w walletDo) FirstOrCreate() (*model.Wallet, error) {
 	if result, err := w.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Wallet), nil
+		return result.(*model.Wallet), nil
 	}
 }
 
-func (w walletDo) FindByPage(offset int, limit int) (result []*models.Wallet, count int64, err error) {
+func (w walletDo) FindByPage(offset int, limit int) (result []*model.Wallet, count int64, err error) {
 	result, err = w.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -409,7 +409,7 @@ func (w walletDo) Scan(result interface{}) (err error) {
 	return w.DO.Scan(result)
 }
 
-func (w walletDo) Delete(models ...*models.Wallet) (result gen.ResultInfo, err error) {
+func (w walletDo) Delete(models ...*model.Wallet) (result gen.ResultInfo, err error) {
 	return w.DO.Delete(models)
 }
 

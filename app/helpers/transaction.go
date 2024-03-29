@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func AllowTransaction(terminal *models.Terminal, data request.NewTnxInterface) (int, any) {
+func AllowTransaction(terminal *model.Terminal, data request.NewTnxInterface) (int, any) {
 	var statusCode int
 	var err any
 
@@ -39,7 +39,7 @@ func AllowTransaction(terminal *models.Terminal, data request.NewTnxInterface) (
 	return statusCode, err
 }
 
-func GetService(serviceSlug string) (*models.Service, services.ProviderInterface) {
+func GetService(serviceSlug string) (*model.Service, services.ProviderInterface) {
 	sQ := query.Service
 	service, _ := sQ.Where(sQ.Slug.Eq(serviceSlug)).Preload(sQ.Provider).First()
 

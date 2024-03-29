@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newLoan(db *gorm.DB, opts ...gen.DOOption) loan {
 	_loan := loan{}
 
 	_loan.loanDo.UseDB(db, opts...)
-	_loan.loanDo.UseModel(&models.Loan{})
+	_loan.loanDo.UseModel(&model.Loan{})
 
 	tableName := _loan.loanDo.TableName()
 	_loan.ALL = field.NewAsterisk(tableName)
@@ -44,11 +44,11 @@ func newLoan(db *gorm.DB, opts ...gen.DOOption) loan {
 	_loan.User = loanBelongsToUser{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("User", "models.User"),
+		RelationField: field.NewRelation("User", "model.User"),
 		Wallet: struct {
 			field.RelationField
 		}{
-			RelationField: field.NewRelation("User.Wallet", "models.Wallet"),
+			RelationField: field.NewRelation("User.Wallet", "model.Wallet"),
 		},
 	}
 
@@ -186,17 +186,17 @@ func (a loanBelongsToUser) Session(session *gorm.Session) *loanBelongsToUser {
 	return &a
 }
 
-func (a loanBelongsToUser) Model(m *models.Loan) *loanBelongsToUserTx {
+func (a loanBelongsToUser) Model(m *model.Loan) *loanBelongsToUserTx {
 	return &loanBelongsToUserTx{a.db.Model(m).Association(a.Name())}
 }
 
 type loanBelongsToUserTx struct{ tx *gorm.Association }
 
-func (a loanBelongsToUserTx) Find() (result *models.User, err error) {
+func (a loanBelongsToUserTx) Find() (result *model.User, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a loanBelongsToUserTx) Append(values ...*models.User) (err error) {
+func (a loanBelongsToUserTx) Append(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -204,7 +204,7 @@ func (a loanBelongsToUserTx) Append(values ...*models.User) (err error) {
 	return a.tx.Append(targetValues...)
 }
 
-func (a loanBelongsToUserTx) Replace(values ...*models.User) (err error) {
+func (a loanBelongsToUserTx) Replace(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -212,7 +212,7 @@ func (a loanBelongsToUserTx) Replace(values ...*models.User) (err error) {
 	return a.tx.Replace(targetValues...)
 }
 
-func (a loanBelongsToUserTx) Delete(values ...*models.User) (err error) {
+func (a loanBelongsToUserTx) Delete(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -259,17 +259,17 @@ type ILoanDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ILoanDo
 	Unscoped() ILoanDo
-	Create(values ...*models.Loan) error
-	CreateInBatches(values []*models.Loan, batchSize int) error
-	Save(values ...*models.Loan) error
-	First() (*models.Loan, error)
-	Take() (*models.Loan, error)
-	Last() (*models.Loan, error)
-	Find() ([]*models.Loan, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Loan, err error)
-	FindInBatches(result *[]*models.Loan, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Loan) error
+	CreateInBatches(values []*model.Loan, batchSize int) error
+	Save(values ...*model.Loan) error
+	First() (*model.Loan, error)
+	Take() (*model.Loan, error)
+	Last() (*model.Loan, error)
+	Find() ([]*model.Loan, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Loan, err error)
+	FindInBatches(result *[]*model.Loan, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Loan) (info gen.ResultInfo, err error)
+	Delete(...*model.Loan) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -281,9 +281,9 @@ type ILoanDo interface {
 	Assign(attrs ...field.AssignExpr) ILoanDo
 	Joins(fields ...field.RelationField) ILoanDo
 	Preload(fields ...field.RelationField) ILoanDo
-	FirstOrInit() (*models.Loan, error)
-	FirstOrCreate() (*models.Loan, error)
-	FindByPage(offset int, limit int) (result []*models.Loan, count int64, err error)
+	FirstOrInit() (*model.Loan, error)
+	FirstOrCreate() (*model.Loan, error)
+	FindByPage(offset int, limit int) (result []*model.Loan, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ILoanDo
@@ -383,57 +383,57 @@ func (l loanDo) Unscoped() ILoanDo {
 	return l.withDO(l.DO.Unscoped())
 }
 
-func (l loanDo) Create(values ...*models.Loan) error {
+func (l loanDo) Create(values ...*model.Loan) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return l.DO.Create(values)
 }
 
-func (l loanDo) CreateInBatches(values []*models.Loan, batchSize int) error {
+func (l loanDo) CreateInBatches(values []*model.Loan, batchSize int) error {
 	return l.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (l loanDo) Save(values ...*models.Loan) error {
+func (l loanDo) Save(values ...*model.Loan) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return l.DO.Save(values)
 }
 
-func (l loanDo) First() (*models.Loan, error) {
+func (l loanDo) First() (*model.Loan, error) {
 	if result, err := l.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Loan), nil
+		return result.(*model.Loan), nil
 	}
 }
 
-func (l loanDo) Take() (*models.Loan, error) {
+func (l loanDo) Take() (*model.Loan, error) {
 	if result, err := l.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Loan), nil
+		return result.(*model.Loan), nil
 	}
 }
 
-func (l loanDo) Last() (*models.Loan, error) {
+func (l loanDo) Last() (*model.Loan, error) {
 	if result, err := l.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Loan), nil
+		return result.(*model.Loan), nil
 	}
 }
 
-func (l loanDo) Find() ([]*models.Loan, error) {
+func (l loanDo) Find() ([]*model.Loan, error) {
 	result, err := l.DO.Find()
-	return result.([]*models.Loan), err
+	return result.([]*model.Loan), err
 }
 
-func (l loanDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Loan, err error) {
-	buf := make([]*models.Loan, 0, batchSize)
+func (l loanDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Loan, err error) {
+	buf := make([]*model.Loan, 0, batchSize)
 	err = l.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -441,7 +441,7 @@ func (l loanDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error)
 	return results, err
 }
 
-func (l loanDo) FindInBatches(result *[]*models.Loan, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (l loanDo) FindInBatches(result *[]*model.Loan, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return l.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -467,23 +467,23 @@ func (l loanDo) Preload(fields ...field.RelationField) ILoanDo {
 	return &l
 }
 
-func (l loanDo) FirstOrInit() (*models.Loan, error) {
+func (l loanDo) FirstOrInit() (*model.Loan, error) {
 	if result, err := l.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Loan), nil
+		return result.(*model.Loan), nil
 	}
 }
 
-func (l loanDo) FirstOrCreate() (*models.Loan, error) {
+func (l loanDo) FirstOrCreate() (*model.Loan, error) {
 	if result, err := l.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Loan), nil
+		return result.(*model.Loan), nil
 	}
 }
 
-func (l loanDo) FindByPage(offset int, limit int) (result []*models.Loan, count int64, err error) {
+func (l loanDo) FindByPage(offset int, limit int) (result []*model.Loan, count int64, err error) {
 	result, err = l.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -512,7 +512,7 @@ func (l loanDo) Scan(result interface{}) (err error) {
 	return l.DO.Scan(result)
 }
 
-func (l loanDo) Delete(models ...*models.Loan) (result gen.ResultInfo, err error) {
+func (l loanDo) Delete(models ...*model.Loan) (result gen.ResultInfo, err error) {
 	return l.DO.Delete(models)
 }
 

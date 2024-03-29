@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 	_terminal := terminal{}
 
 	_terminal.terminalDo.UseDB(db, opts...)
-	_terminal.terminalDo.UseModel(&models.Terminal{})
+	_terminal.terminalDo.UseModel(&model.Terminal{})
 
 	tableName := _terminal.terminalDo.TableName()
 	_terminal.ALL = field.NewAsterisk(tableName)
@@ -52,22 +52,22 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 	_terminal.User = terminalBelongsToUser{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("User", "models.User"),
+		RelationField: field.NewRelation("User", "model.User"),
 		Wallet: struct {
 			field.RelationField
 		}{
-			RelationField: field.NewRelation("User.Wallet", "models.Wallet"),
+			RelationField: field.NewRelation("User.Wallet", "model.Wallet"),
 		},
 	}
 
 	_terminal.Services = terminalManyToManyServices{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("Services", "models.Service"),
+		RelationField: field.NewRelation("Services", "model.Service"),
 		Provider: struct {
 			field.RelationField
 		}{
-			RelationField: field.NewRelation("Services.Provider", "models.ServiceProvider"),
+			RelationField: field.NewRelation("Services.Provider", "model.ServiceProvider"),
 		},
 	}
 
@@ -231,17 +231,17 @@ func (a terminalBelongsToUser) Session(session *gorm.Session) *terminalBelongsTo
 	return &a
 }
 
-func (a terminalBelongsToUser) Model(m *models.Terminal) *terminalBelongsToUserTx {
+func (a terminalBelongsToUser) Model(m *model.Terminal) *terminalBelongsToUserTx {
 	return &terminalBelongsToUserTx{a.db.Model(m).Association(a.Name())}
 }
 
 type terminalBelongsToUserTx struct{ tx *gorm.Association }
 
-func (a terminalBelongsToUserTx) Find() (result *models.User, err error) {
+func (a terminalBelongsToUserTx) Find() (result *model.User, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a terminalBelongsToUserTx) Append(values ...*models.User) (err error) {
+func (a terminalBelongsToUserTx) Append(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -249,7 +249,7 @@ func (a terminalBelongsToUserTx) Append(values ...*models.User) (err error) {
 	return a.tx.Append(targetValues...)
 }
 
-func (a terminalBelongsToUserTx) Replace(values ...*models.User) (err error) {
+func (a terminalBelongsToUserTx) Replace(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -257,7 +257,7 @@ func (a terminalBelongsToUserTx) Replace(values ...*models.User) (err error) {
 	return a.tx.Replace(targetValues...)
 }
 
-func (a terminalBelongsToUserTx) Delete(values ...*models.User) (err error) {
+func (a terminalBelongsToUserTx) Delete(values ...*model.User) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -306,17 +306,17 @@ func (a terminalManyToManyServices) Session(session *gorm.Session) *terminalMany
 	return &a
 }
 
-func (a terminalManyToManyServices) Model(m *models.Terminal) *terminalManyToManyServicesTx {
+func (a terminalManyToManyServices) Model(m *model.Terminal) *terminalManyToManyServicesTx {
 	return &terminalManyToManyServicesTx{a.db.Model(m).Association(a.Name())}
 }
 
 type terminalManyToManyServicesTx struct{ tx *gorm.Association }
 
-func (a terminalManyToManyServicesTx) Find() (result []*models.Service, err error) {
+func (a terminalManyToManyServicesTx) Find() (result []*model.Service, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a terminalManyToManyServicesTx) Append(values ...*models.Service) (err error) {
+func (a terminalManyToManyServicesTx) Append(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -324,7 +324,7 @@ func (a terminalManyToManyServicesTx) Append(values ...*models.Service) (err err
 	return a.tx.Append(targetValues...)
 }
 
-func (a terminalManyToManyServicesTx) Replace(values ...*models.Service) (err error) {
+func (a terminalManyToManyServicesTx) Replace(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -332,7 +332,7 @@ func (a terminalManyToManyServicesTx) Replace(values ...*models.Service) (err er
 	return a.tx.Replace(targetValues...)
 }
 
-func (a terminalManyToManyServicesTx) Delete(values ...*models.Service) (err error) {
+func (a terminalManyToManyServicesTx) Delete(values ...*model.Service) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -379,17 +379,17 @@ type ITerminalDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ITerminalDo
 	Unscoped() ITerminalDo
-	Create(values ...*models.Terminal) error
-	CreateInBatches(values []*models.Terminal, batchSize int) error
-	Save(values ...*models.Terminal) error
-	First() (*models.Terminal, error)
-	Take() (*models.Terminal, error)
-	Last() (*models.Terminal, error)
-	Find() ([]*models.Terminal, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Terminal, err error)
-	FindInBatches(result *[]*models.Terminal, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Terminal) error
+	CreateInBatches(values []*model.Terminal, batchSize int) error
+	Save(values ...*model.Terminal) error
+	First() (*model.Terminal, error)
+	Take() (*model.Terminal, error)
+	Last() (*model.Terminal, error)
+	Find() ([]*model.Terminal, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Terminal, err error)
+	FindInBatches(result *[]*model.Terminal, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Terminal) (info gen.ResultInfo, err error)
+	Delete(...*model.Terminal) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -401,9 +401,9 @@ type ITerminalDo interface {
 	Assign(attrs ...field.AssignExpr) ITerminalDo
 	Joins(fields ...field.RelationField) ITerminalDo
 	Preload(fields ...field.RelationField) ITerminalDo
-	FirstOrInit() (*models.Terminal, error)
-	FirstOrCreate() (*models.Terminal, error)
-	FindByPage(offset int, limit int) (result []*models.Terminal, count int64, err error)
+	FirstOrInit() (*model.Terminal, error)
+	FirstOrCreate() (*model.Terminal, error)
+	FindByPage(offset int, limit int) (result []*model.Terminal, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ITerminalDo
@@ -503,57 +503,57 @@ func (t terminalDo) Unscoped() ITerminalDo {
 	return t.withDO(t.DO.Unscoped())
 }
 
-func (t terminalDo) Create(values ...*models.Terminal) error {
+func (t terminalDo) Create(values ...*model.Terminal) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Create(values)
 }
 
-func (t terminalDo) CreateInBatches(values []*models.Terminal, batchSize int) error {
+func (t terminalDo) CreateInBatches(values []*model.Terminal, batchSize int) error {
 	return t.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (t terminalDo) Save(values ...*models.Terminal) error {
+func (t terminalDo) Save(values ...*model.Terminal) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Save(values)
 }
 
-func (t terminalDo) First() (*models.Terminal, error) {
+func (t terminalDo) First() (*model.Terminal, error) {
 	if result, err := t.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Terminal), nil
+		return result.(*model.Terminal), nil
 	}
 }
 
-func (t terminalDo) Take() (*models.Terminal, error) {
+func (t terminalDo) Take() (*model.Terminal, error) {
 	if result, err := t.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Terminal), nil
+		return result.(*model.Terminal), nil
 	}
 }
 
-func (t terminalDo) Last() (*models.Terminal, error) {
+func (t terminalDo) Last() (*model.Terminal, error) {
 	if result, err := t.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Terminal), nil
+		return result.(*model.Terminal), nil
 	}
 }
 
-func (t terminalDo) Find() ([]*models.Terminal, error) {
+func (t terminalDo) Find() ([]*model.Terminal, error) {
 	result, err := t.DO.Find()
-	return result.([]*models.Terminal), err
+	return result.([]*model.Terminal), err
 }
 
-func (t terminalDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Terminal, err error) {
-	buf := make([]*models.Terminal, 0, batchSize)
+func (t terminalDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Terminal, err error) {
+	buf := make([]*model.Terminal, 0, batchSize)
 	err = t.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -561,7 +561,7 @@ func (t terminalDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (t terminalDo) FindInBatches(result *[]*models.Terminal, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (t terminalDo) FindInBatches(result *[]*model.Terminal, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return t.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -587,23 +587,23 @@ func (t terminalDo) Preload(fields ...field.RelationField) ITerminalDo {
 	return &t
 }
 
-func (t terminalDo) FirstOrInit() (*models.Terminal, error) {
+func (t terminalDo) FirstOrInit() (*model.Terminal, error) {
 	if result, err := t.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Terminal), nil
+		return result.(*model.Terminal), nil
 	}
 }
 
-func (t terminalDo) FirstOrCreate() (*models.Terminal, error) {
+func (t terminalDo) FirstOrCreate() (*model.Terminal, error) {
 	if result, err := t.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Terminal), nil
+		return result.(*model.Terminal), nil
 	}
 }
 
-func (t terminalDo) FindByPage(offset int, limit int) (result []*models.Terminal, count int64, err error) {
+func (t terminalDo) FindByPage(offset int, limit int) (result []*model.Terminal, count int64, err error) {
 	result, err = t.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -632,7 +632,7 @@ func (t terminalDo) Scan(result interface{}) (err error) {
 	return t.DO.Scan(result)
 }
 
-func (t terminalDo) Delete(models ...*models.Terminal) (result gen.ResultInfo, err error) {
+func (t terminalDo) Delete(models ...*model.Terminal) (result gen.ResultInfo, err error) {
 	return t.DO.Delete(models)
 }
 

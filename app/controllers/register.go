@@ -34,7 +34,7 @@ func Register(c echo.Context) error {
 		}
 	}
 
-	agent := models.NewUser(&data, superAgentId)
+	agent := model.NewUser(&data, superAgentId)
 
 	dbTxErr := query.Use(database.Db).Transaction(func(tx *query.Query) error {
 		if err := tx.User.Create(agent); err != nil {
@@ -43,7 +43,7 @@ func Register(c echo.Context) error {
 
 		uwid, _ := uuid.NewV4()
 
-		wallet := models.Wallet{
+		wallet := model.Wallet{
 			UserId:        agent.ID,
 			Uwid:          uwid.String(),
 			AccountNumber: data.Phone[len(data.Phone)-10:],
@@ -55,7 +55,7 @@ func Register(c echo.Context) error {
 
 		// TODO: Create Virtual Account
 
-		terminal := models.NewTerminal(agent, data.Serial, data.Device, helper.NewTid())
+		terminal := model.NewTerminal(agent, data.Serial, data.Device, helper.NewTid())
 
 		if err := tx.Terminal.Create(terminal); err != nil {
 			return err

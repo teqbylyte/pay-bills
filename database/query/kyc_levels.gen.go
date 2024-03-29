@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newKycLevel(db *gorm.DB, opts ...gen.DOOption) kycLevel {
 	_kycLevel := kycLevel{}
 
 	_kycLevel.kycLevelDo.UseDB(db, opts...)
-	_kycLevel.kycLevelDo.UseModel(&models.KycLevel{})
+	_kycLevel.kycLevelDo.UseModel(&model.KycLevel{})
 
 	tableName := _kycLevel.kycLevelDo.TableName()
 	_kycLevel.ALL = field.NewAsterisk(tableName)
@@ -140,17 +140,17 @@ type IKycLevelDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IKycLevelDo
 	Unscoped() IKycLevelDo
-	Create(values ...*models.KycLevel) error
-	CreateInBatches(values []*models.KycLevel, batchSize int) error
-	Save(values ...*models.KycLevel) error
-	First() (*models.KycLevel, error)
-	Take() (*models.KycLevel, error)
-	Last() (*models.KycLevel, error)
-	Find() ([]*models.KycLevel, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.KycLevel, err error)
-	FindInBatches(result *[]*models.KycLevel, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.KycLevel) error
+	CreateInBatches(values []*model.KycLevel, batchSize int) error
+	Save(values ...*model.KycLevel) error
+	First() (*model.KycLevel, error)
+	Take() (*model.KycLevel, error)
+	Last() (*model.KycLevel, error)
+	Find() ([]*model.KycLevel, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.KycLevel, err error)
+	FindInBatches(result *[]*model.KycLevel, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.KycLevel) (info gen.ResultInfo, err error)
+	Delete(...*model.KycLevel) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -162,9 +162,9 @@ type IKycLevelDo interface {
 	Assign(attrs ...field.AssignExpr) IKycLevelDo
 	Joins(fields ...field.RelationField) IKycLevelDo
 	Preload(fields ...field.RelationField) IKycLevelDo
-	FirstOrInit() (*models.KycLevel, error)
-	FirstOrCreate() (*models.KycLevel, error)
-	FindByPage(offset int, limit int) (result []*models.KycLevel, count int64, err error)
+	FirstOrInit() (*model.KycLevel, error)
+	FirstOrCreate() (*model.KycLevel, error)
+	FindByPage(offset int, limit int) (result []*model.KycLevel, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IKycLevelDo
@@ -264,57 +264,57 @@ func (k kycLevelDo) Unscoped() IKycLevelDo {
 	return k.withDO(k.DO.Unscoped())
 }
 
-func (k kycLevelDo) Create(values ...*models.KycLevel) error {
+func (k kycLevelDo) Create(values ...*model.KycLevel) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return k.DO.Create(values)
 }
 
-func (k kycLevelDo) CreateInBatches(values []*models.KycLevel, batchSize int) error {
+func (k kycLevelDo) CreateInBatches(values []*model.KycLevel, batchSize int) error {
 	return k.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (k kycLevelDo) Save(values ...*models.KycLevel) error {
+func (k kycLevelDo) Save(values ...*model.KycLevel) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return k.DO.Save(values)
 }
 
-func (k kycLevelDo) First() (*models.KycLevel, error) {
+func (k kycLevelDo) First() (*model.KycLevel, error) {
 	if result, err := k.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.KycLevel), nil
+		return result.(*model.KycLevel), nil
 	}
 }
 
-func (k kycLevelDo) Take() (*models.KycLevel, error) {
+func (k kycLevelDo) Take() (*model.KycLevel, error) {
 	if result, err := k.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.KycLevel), nil
+		return result.(*model.KycLevel), nil
 	}
 }
 
-func (k kycLevelDo) Last() (*models.KycLevel, error) {
+func (k kycLevelDo) Last() (*model.KycLevel, error) {
 	if result, err := k.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.KycLevel), nil
+		return result.(*model.KycLevel), nil
 	}
 }
 
-func (k kycLevelDo) Find() ([]*models.KycLevel, error) {
+func (k kycLevelDo) Find() ([]*model.KycLevel, error) {
 	result, err := k.DO.Find()
-	return result.([]*models.KycLevel), err
+	return result.([]*model.KycLevel), err
 }
 
-func (k kycLevelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.KycLevel, err error) {
-	buf := make([]*models.KycLevel, 0, batchSize)
+func (k kycLevelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.KycLevel, err error) {
+	buf := make([]*model.KycLevel, 0, batchSize)
 	err = k.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -322,7 +322,7 @@ func (k kycLevelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (k kycLevelDo) FindInBatches(result *[]*models.KycLevel, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (k kycLevelDo) FindInBatches(result *[]*model.KycLevel, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return k.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -348,23 +348,23 @@ func (k kycLevelDo) Preload(fields ...field.RelationField) IKycLevelDo {
 	return &k
 }
 
-func (k kycLevelDo) FirstOrInit() (*models.KycLevel, error) {
+func (k kycLevelDo) FirstOrInit() (*model.KycLevel, error) {
 	if result, err := k.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.KycLevel), nil
+		return result.(*model.KycLevel), nil
 	}
 }
 
-func (k kycLevelDo) FirstOrCreate() (*models.KycLevel, error) {
+func (k kycLevelDo) FirstOrCreate() (*model.KycLevel, error) {
 	if result, err := k.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.KycLevel), nil
+		return result.(*model.KycLevel), nil
 	}
 }
 
-func (k kycLevelDo) FindByPage(offset int, limit int) (result []*models.KycLevel, count int64, err error) {
+func (k kycLevelDo) FindByPage(offset int, limit int) (result []*model.KycLevel, count int64, err error) {
 	result, err = k.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -393,7 +393,7 @@ func (k kycLevelDo) Scan(result interface{}) (err error) {
 	return k.DO.Scan(result)
 }
 
-func (k kycLevelDo) Delete(models ...*models.KycLevel) (result gen.ResultInfo, err error) {
+func (k kycLevelDo) Delete(models ...*model.KycLevel) (result gen.ResultInfo, err error) {
 	return k.DO.Delete(models)
 }
 

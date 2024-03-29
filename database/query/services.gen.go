@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	"martpay/app/models"
+	model "martpay/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -22,7 +22,7 @@ func newService(db *gorm.DB, opts ...gen.DOOption) service {
 	_service := service{}
 
 	_service.serviceDo.UseDB(db, opts...)
-	_service.serviceDo.UseModel(&models.Service{})
+	_service.serviceDo.UseModel(&model.Service{})
 
 	tableName := _service.serviceDo.TableName()
 	_service.ALL = field.NewAsterisk(tableName)
@@ -40,7 +40,7 @@ func newService(db *gorm.DB, opts ...gen.DOOption) service {
 	_service.Provider = serviceBelongsToProvider{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("Provider", "models.ServiceProvider"),
+		RelationField: field.NewRelation("Provider", "model.ServiceProvider"),
 	}
 
 	_service.fillFieldMap()
@@ -161,17 +161,17 @@ func (a serviceBelongsToProvider) Session(session *gorm.Session) *serviceBelongs
 	return &a
 }
 
-func (a serviceBelongsToProvider) Model(m *models.Service) *serviceBelongsToProviderTx {
+func (a serviceBelongsToProvider) Model(m *model.Service) *serviceBelongsToProviderTx {
 	return &serviceBelongsToProviderTx{a.db.Model(m).Association(a.Name())}
 }
 
 type serviceBelongsToProviderTx struct{ tx *gorm.Association }
 
-func (a serviceBelongsToProviderTx) Find() (result *models.ServiceProvider, err error) {
+func (a serviceBelongsToProviderTx) Find() (result *model.ServiceProvider, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a serviceBelongsToProviderTx) Append(values ...*models.ServiceProvider) (err error) {
+func (a serviceBelongsToProviderTx) Append(values ...*model.ServiceProvider) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -179,7 +179,7 @@ func (a serviceBelongsToProviderTx) Append(values ...*models.ServiceProvider) (e
 	return a.tx.Append(targetValues...)
 }
 
-func (a serviceBelongsToProviderTx) Replace(values ...*models.ServiceProvider) (err error) {
+func (a serviceBelongsToProviderTx) Replace(values ...*model.ServiceProvider) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -187,7 +187,7 @@ func (a serviceBelongsToProviderTx) Replace(values ...*models.ServiceProvider) (
 	return a.tx.Replace(targetValues...)
 }
 
-func (a serviceBelongsToProviderTx) Delete(values ...*models.ServiceProvider) (err error) {
+func (a serviceBelongsToProviderTx) Delete(values ...*model.ServiceProvider) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -234,17 +234,17 @@ type IServiceDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IServiceDo
 	Unscoped() IServiceDo
-	Create(values ...*models.Service) error
-	CreateInBatches(values []*models.Service, batchSize int) error
-	Save(values ...*models.Service) error
-	First() (*models.Service, error)
-	Take() (*models.Service, error)
-	Last() (*models.Service, error)
-	Find() ([]*models.Service, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Service, err error)
-	FindInBatches(result *[]*models.Service, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Service) error
+	CreateInBatches(values []*model.Service, batchSize int) error
+	Save(values ...*model.Service) error
+	First() (*model.Service, error)
+	Take() (*model.Service, error)
+	Last() (*model.Service, error)
+	Find() ([]*model.Service, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Service, err error)
+	FindInBatches(result *[]*model.Service, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*models.Service) (info gen.ResultInfo, err error)
+	Delete(...*model.Service) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -256,9 +256,9 @@ type IServiceDo interface {
 	Assign(attrs ...field.AssignExpr) IServiceDo
 	Joins(fields ...field.RelationField) IServiceDo
 	Preload(fields ...field.RelationField) IServiceDo
-	FirstOrInit() (*models.Service, error)
-	FirstOrCreate() (*models.Service, error)
-	FindByPage(offset int, limit int) (result []*models.Service, count int64, err error)
+	FirstOrInit() (*model.Service, error)
+	FirstOrCreate() (*model.Service, error)
+	FindByPage(offset int, limit int) (result []*model.Service, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IServiceDo
@@ -358,57 +358,57 @@ func (s serviceDo) Unscoped() IServiceDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s serviceDo) Create(values ...*models.Service) error {
+func (s serviceDo) Create(values ...*model.Service) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s serviceDo) CreateInBatches(values []*models.Service, batchSize int) error {
+func (s serviceDo) CreateInBatches(values []*model.Service, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s serviceDo) Save(values ...*models.Service) error {
+func (s serviceDo) Save(values ...*model.Service) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s serviceDo) First() (*models.Service, error) {
+func (s serviceDo) First() (*model.Service, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Service), nil
+		return result.(*model.Service), nil
 	}
 }
 
-func (s serviceDo) Take() (*models.Service, error) {
+func (s serviceDo) Take() (*model.Service, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Service), nil
+		return result.(*model.Service), nil
 	}
 }
 
-func (s serviceDo) Last() (*models.Service, error) {
+func (s serviceDo) Last() (*model.Service, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Service), nil
+		return result.(*model.Service), nil
 	}
 }
 
-func (s serviceDo) Find() ([]*models.Service, error) {
+func (s serviceDo) Find() ([]*model.Service, error) {
 	result, err := s.DO.Find()
-	return result.([]*models.Service), err
+	return result.([]*model.Service), err
 }
 
-func (s serviceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*models.Service, err error) {
-	buf := make([]*models.Service, 0, batchSize)
+func (s serviceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Service, err error) {
+	buf := make([]*model.Service, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -416,7 +416,7 @@ func (s serviceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) err
 	return results, err
 }
 
-func (s serviceDo) FindInBatches(result *[]*models.Service, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s serviceDo) FindInBatches(result *[]*model.Service, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -442,23 +442,23 @@ func (s serviceDo) Preload(fields ...field.RelationField) IServiceDo {
 	return &s
 }
 
-func (s serviceDo) FirstOrInit() (*models.Service, error) {
+func (s serviceDo) FirstOrInit() (*model.Service, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Service), nil
+		return result.(*model.Service), nil
 	}
 }
 
-func (s serviceDo) FirstOrCreate() (*models.Service, error) {
+func (s serviceDo) FirstOrCreate() (*model.Service, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*models.Service), nil
+		return result.(*model.Service), nil
 	}
 }
 
-func (s serviceDo) FindByPage(offset int, limit int) (result []*models.Service, count int64, err error) {
+func (s serviceDo) FindByPage(offset int, limit int) (result []*model.Service, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -487,7 +487,7 @@ func (s serviceDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s serviceDo) Delete(models ...*models.Service) (result gen.ResultInfo, err error) {
+func (s serviceDo) Delete(models ...*model.Service) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 
