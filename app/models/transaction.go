@@ -17,9 +17,9 @@ type Transactions struct {
 	Reference      string         `json:"reference" gorm:"unique;not null"`
 	ResponseCode   *string        `json:"response_code" gorm:"type:varchar(4);"`
 	Stan           *string        `json:"stan"`
+	Recipient      *string        `json:"recipient"`
 	BankName       *string        `json:"bank_name"`
 	BankCode       *string        `json:"bank_code"`
-	AccountNumber  *string        `json:"account_number"`
 	AccountName    *string        `json:"account_name"`
 	Info           *string        `json:"info"`
 	PowerToken     *string        `json:"power_token"`
@@ -42,6 +42,7 @@ func NewPendingTransaction(
 	reference string,
 	info string,
 	provider string,
+	recipient string,
 	terminalInfo *request.TerminalInfo) *Transactions {
 
 	return &Transactions{
@@ -52,6 +53,7 @@ func NewPendingTransaction(
 		TotalAmount: totalAmount,
 		Charge:      totalAmount - amount,
 		Reference:   reference,
+		Recipient:   &recipient,
 		Status:      enums.PENDING,
 		Info:        &info,
 		Provider:    provider,

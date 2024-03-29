@@ -30,7 +30,7 @@ func newServiceProvider(db *gorm.DB, opts ...gen.DOOption) serviceProvider {
 	_serviceProvider.CreatedAt = field.NewTime(tableName, "created_at")
 	_serviceProvider.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_serviceProvider.ServiceId = field.NewUint(tableName, "service_id")
-	_serviceProvider.Name = field.NewUint(tableName, "name")
+	_serviceProvider.Name = field.NewString(tableName, "name")
 
 	_serviceProvider.fillFieldMap()
 
@@ -45,7 +45,7 @@ type serviceProvider struct {
 	CreatedAt field.Time
 	UpdatedAt field.Time
 	ServiceId field.Uint
-	Name      field.Uint
+	Name      field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -66,7 +66,7 @@ func (s *serviceProvider) updateTableName(table string) *serviceProvider {
 	s.CreatedAt = field.NewTime(table, "created_at")
 	s.UpdatedAt = field.NewTime(table, "updated_at")
 	s.ServiceId = field.NewUint(table, "service_id")
-	s.Name = field.NewUint(table, "name")
+	s.Name = field.NewString(table, "name")
 
 	s.fillFieldMap()
 

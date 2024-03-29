@@ -38,9 +38,9 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 	_transactions.Reference = field.NewString(tableName, "reference")
 	_transactions.ResponseCode = field.NewString(tableName, "response_code")
 	_transactions.Stan = field.NewString(tableName, "stan")
+	_transactions.Recipient = field.NewString(tableName, "recipient")
 	_transactions.BankName = field.NewString(tableName, "bank_name")
 	_transactions.BankCode = field.NewString(tableName, "bank_code")
-	_transactions.AccountNumber = field.NewString(tableName, "account_number")
 	_transactions.AccountName = field.NewString(tableName, "account_name")
 	_transactions.Info = field.NewString(tableName, "info")
 	_transactions.PowerToken = field.NewString(tableName, "power_token")
@@ -56,6 +56,11 @@ func newTransactions(db *gorm.DB, opts ...gen.DOOption) transactions {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("Service", "models.Service"),
+		Provider: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("Service.Provider", "models.ServiceProvider"),
+		},
 	}
 
 	_transactions.fillFieldMap()
@@ -79,9 +84,9 @@ type transactions struct {
 	Reference      field.String
 	ResponseCode   field.String
 	Stan           field.String
+	Recipient      field.String
 	BankName       field.String
 	BankCode       field.String
-	AccountNumber  field.String
 	AccountName    field.String
 	Info           field.String
 	PowerToken     field.String
@@ -122,9 +127,9 @@ func (t *transactions) updateTableName(table string) *transactions {
 	t.Reference = field.NewString(table, "reference")
 	t.ResponseCode = field.NewString(table, "response_code")
 	t.Stan = field.NewString(table, "stan")
+	t.Recipient = field.NewString(table, "recipient")
 	t.BankName = field.NewString(table, "bank_name")
 	t.BankCode = field.NewString(table, "bank_code")
-	t.AccountNumber = field.NewString(table, "account_number")
 	t.AccountName = field.NewString(table, "account_name")
 	t.Info = field.NewString(table, "info")
 	t.PowerToken = field.NewString(table, "power_token")
@@ -165,9 +170,9 @@ func (t *transactions) fillFieldMap() {
 	t.fieldMap["reference"] = t.Reference
 	t.fieldMap["response_code"] = t.ResponseCode
 	t.fieldMap["stan"] = t.Stan
+	t.fieldMap["recipient"] = t.Recipient
 	t.fieldMap["bank_name"] = t.BankName
 	t.fieldMap["bank_code"] = t.BankCode
-	t.fieldMap["account_number"] = t.AccountNumber
 	t.fieldMap["account_name"] = t.AccountName
 	t.fieldMap["info"] = t.Info
 	t.fieldMap["power_token"] = t.PowerToken
@@ -196,6 +201,10 @@ type transactionsBelongsToService struct {
 	db *gorm.DB
 
 	field.RelationField
+
+	Provider struct {
+		field.RelationField
+	}
 }
 
 func (a transactionsBelongsToService) Where(conds ...field.Expr) *transactionsBelongsToService {

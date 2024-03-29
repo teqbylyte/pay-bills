@@ -46,8 +46,10 @@ func CreateLoan(c echo.Context) error {
 	charge := 0.0 // Todo: Get Charge
 	totalAmount := charge + data.Amount
 	reference := helper.NewTransactionReference()
+	info := "Loan request"
 
-	transaction := models.NewPendingTransaction(terminal, service, data.Amount, totalAmount, reference, "", "INTERNAL", &data.TerminalInfo)
+	transaction := models.NewPendingTransaction(terminal, service, data.Amount, totalAmount, reference, info,
+		"INTERNAL", "", &data.TerminalInfo)
 
 	// TODO: Check if loan can be created. (1) Has super agent (2) Does not have pending loan
 

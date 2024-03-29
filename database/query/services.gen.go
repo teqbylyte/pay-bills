@@ -37,6 +37,11 @@ func newService(db *gorm.DB, opts ...gen.DOOption) service {
 	_service.Description = field.NewString(tableName, "description")
 	_service.Menu = field.NewBool(tableName, "menu")
 	_service.Internal = field.NewBool(tableName, "internal")
+	_service.Provider = serviceBelongsToProvider{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("Provider", "models.ServiceProvider"),
+	}
 
 	_service.fillFieldMap()
 
@@ -58,6 +63,7 @@ type service struct {
 	Description field.String
 	Menu        field.Bool
 	Internal    field.Bool
+	Provider    serviceBelongsToProvider
 
 	fieldMap map[string]field.Expr
 }
@@ -101,7 +107,7 @@ func (s *service) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (s *service) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 11)
+	s.fieldMap = make(map[string]field.Expr, 12)
 	s.fieldMap["id"] = s.ID
 	s.fieldMap["created_at"] = s.CreatedAt
 	s.fieldMap["updated_at"] = s.UpdatedAt
@@ -113,6 +119,7 @@ func (s *service) fillFieldMap() {
 	s.fieldMap["description"] = s.Description
 	s.fieldMap["menu"] = s.Menu
 	s.fieldMap["internal"] = s.Internal
+
 }
 
 func (s service) clone(db *gorm.DB) service {
@@ -123,6 +130,77 @@ func (s service) clone(db *gorm.DB) service {
 func (s service) replaceDB(db *gorm.DB) service {
 	s.serviceDo.ReplaceDB(db)
 	return s
+}
+
+type serviceBelongsToProvider struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a serviceBelongsToProvider) Where(conds ...field.Expr) *serviceBelongsToProvider {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a serviceBelongsToProvider) WithContext(ctx context.Context) *serviceBelongsToProvider {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a serviceBelongsToProvider) Session(session *gorm.Session) *serviceBelongsToProvider {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a serviceBelongsToProvider) Model(m *models.Service) *serviceBelongsToProviderTx {
+	return &serviceBelongsToProviderTx{a.db.Model(m).Association(a.Name())}
+}
+
+type serviceBelongsToProviderTx struct{ tx *gorm.Association }
+
+func (a serviceBelongsToProviderTx) Find() (result *models.ServiceProvider, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a serviceBelongsToProviderTx) Append(values ...*models.ServiceProvider) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a serviceBelongsToProviderTx) Replace(values ...*models.ServiceProvider) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a serviceBelongsToProviderTx) Delete(values ...*models.ServiceProvider) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a serviceBelongsToProviderTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a serviceBelongsToProviderTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type serviceDo struct{ gen.DO }

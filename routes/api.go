@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 	ctrl "martpay/app/controllers"
+	serviceCtrl "martpay/app/controllers/services"
 	"martpay/database/query"
 )
 
@@ -39,6 +40,11 @@ func Api(e *echo.Echo) {
 	//TODO: Check that the serial in the deviceId belongs to the auth user
 
 	auth.POST("/loans", ctrl.CreateLoan)
+
+	service := auth.Group("/services")
+
+	service.GET("/airtime/networks", serviceCtrl.GetAirtimeNetworks)
+	service.POST("/airtime/purchase", serviceCtrl.PurchaseAirtime)
 }
 
 func jwtConfig() echojwt.Config {

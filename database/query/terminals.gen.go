@@ -64,6 +64,11 @@ func newTerminal(db *gorm.DB, opts ...gen.DOOption) terminal {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("Services", "models.Service"),
+		Provider: struct {
+			field.RelationField
+		}{
+			RelationField: field.NewRelation("Services.Provider", "models.ServiceProvider"),
+		},
 	}
 
 	_terminal.fillFieldMap()
@@ -272,6 +277,10 @@ type terminalManyToManyServices struct {
 	db *gorm.DB
 
 	field.RelationField
+
+	Provider struct {
+		field.RelationField
+	}
 }
 
 func (a terminalManyToManyServices) Where(conds ...field.Expr) *terminalManyToManyServices {
