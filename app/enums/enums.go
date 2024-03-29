@@ -6,6 +6,8 @@ type DocumentType string
 type ScheduleType string
 type SchedulePeriod string
 type Role string
+type TransType string
+type ACTION string
 
 const (
 	ACTIVE    State = "ACTIVE"
@@ -33,4 +35,11 @@ const (
 
 	AGENT      Role = "agent"
 	SUPERAGENT Role = "super-agent"
+
+	CHARGE      TransType = "CHARGE"
+	COMMISSION  TransType = "COMMISSION"
+	TRANSACTION TransType = "TRANSACTION"
+
+	CREDIT ACTION = "CREDIT"
+	DEBIT  ACTION = "DEBIT"
 )

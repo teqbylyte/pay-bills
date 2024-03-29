@@ -3,7 +3,6 @@ package helper
 import (
 	"errors"
 	"fmt"
-	"martpay/app/contracts"
 	"martpay/app/enums"
 	"martpay/app/models"
 	"martpay/app/request"
@@ -13,7 +12,7 @@ import (
 	"net/http"
 )
 
-func AllowTransaction(terminal *models.Terminal, i request.NewTransactionInterface) (int, any) {
+func AllowTransaction(terminal *models.Terminal, data request.NewTnxInterface) (int, any) {
 	var statusCode int
 	var err any
 
@@ -25,11 +24,11 @@ func AllowTransaction(terminal *models.Terminal, i request.NewTransactionInterfa
 		statusCode, err = http.StatusForbidden, errors.New(fmt.Sprintf("Your account is %s", terminal.Status))
 	}
 
-	if vte := request.ValidateNewTransaction(i); vte != nil {
+	if vte := request.ValidateNewTnx(data); vte != nil {
 		statusCode, err = http.StatusUnprocessableEntity, vte
 	}
 
-	if e := CheckTerminalPin(terminal, i.GetTerminalInfo().Pin); e != nil {
+	if e := CheckTerminalPin(terminal, data.GetTerminalInfo().Pin); e != nil {
 		statusCode, err = http.StatusForbidden, e
 	}
 
@@ -40,11 +39,11 @@ func AllowTransaction(terminal *models.Terminal, i request.NewTransactionInterfa
 	return statusCode, err
 }
 
-func GetService(serviceSlug string) (*models.Service, contracts.BaseProviderInterface) {
+func GetService(serviceSlug string) (*models.Service, services.ProviderInterface) {
 	sQ := query.Service
-	service, _ := sQ.Where(sQ.Slug.Eq("airtime")).Preload(sQ.Provider).First()
+	service, _ := sQ.Where(sQ.Slug.Eq(serviceSlug)).Preload(sQ.Provider).First()
 
-	var provider contracts.BaseProviderInterface
+	var provider services.ProviderInterface
 
 	switch service.Provider.Name {
 	case services.Spout{}.GetName():

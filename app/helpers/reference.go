@@ -7,13 +7,27 @@ import (
 	"time"
 )
 
-func NewTransactionReference() string {
+// NewTnxRef - Unique transaction reference.
+func NewTnxRef() string {
 	reference := fmt.Sprintf("mp_%s", utils.GenerateReference(17))
 
 	// check for duplicate reference
 	count, _ := query.Transactions.Where(query.Transactions.Reference.Eq(reference)).Count()
 	if count > 0 {
-		return NewTransactionReference()
+		return NewTnxRef()
+	}
+
+	return reference
+}
+
+// NewWalletTnxRef - Unique wallet transaction reference
+func NewWalletTnxRef() string {
+	reference := fmt.Sprintf("mp_%sw", utils.GenerateReference(16))
+
+	// check for duplicate reference
+	count, _ := query.WalletTransaction.Where(query.WalletTransaction.Reference.Eq(reference)).Count()
+	if count > 0 {
+		return NewTnxRef()
 	}
 
 	return reference

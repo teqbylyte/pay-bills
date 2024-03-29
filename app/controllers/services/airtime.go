@@ -6,6 +6,7 @@ import (
 	helper "martpay/app/helpers"
 	"martpay/app/models"
 	"martpay/app/request"
+	"martpay/app/services"
 	"martpay/app/utils"
 	"martpay/database/query"
 	"net/http"
@@ -38,15 +39,20 @@ func PurchaseAirtime(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, utils.FailedResponse("Service Unavailable"))
 	}
 
-	reference := helper.NewTransactionReference()
+	reference := helper.NewTnxRef()
 	info := fmt.Sprintf("Airtime purchase of %v for %s", data.Amount, data.Network)
+	charge := 0.0 // TODO: Get charge from terminal group
 
-	transaction := models.NewPendingTransaction(terminal, service, data.Amount, data.Amount, reference, info,
+	transaction := models.NewPendingTransaction(terminal, service, data.Amount, data.Amount+charge, reference, info,
 		provider.GetName(), data.Phone, &data.TerminalInfo)
-	// Record in the db.
+	// Record transaction in the db.
 	_ = query.Transactions.Create(transaction)
 
-	// Todo: Debit the wallet
+	airtimeProvider := provider.(services.AirtimeInterface)
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("Airtime purchase successful"))
+	status, response := helper.ProcessPurchase(terminal, service, transaction, data,
+		airtimeProvider.PurchaseAirtime,
+	)
+
+	return c.JSON(status, response)
 }

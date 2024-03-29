@@ -6,8 +6,8 @@ import (
 	"martpay/app/utils"
 )
 
-// NewTransactionInterface - This defines the methods that every request data which would create a new transaction should implement.
-type NewTransactionInterface interface {
+// NewTnxInterface - This defines the methods that every request data which would create a new transaction should implement.
+type NewTnxInterface interface {
 	contracts.ValidationInterface
 
 	// GetAmount - The amount for the specific transaction request
@@ -32,7 +32,7 @@ func Validate(i contracts.ValidationInterface) any {
 	return nil
 }
 
-func ValidateNewTransaction(i NewTransactionInterface) any {
+func ValidateNewTnx(i NewTnxInterface) any {
 	var err any
 
 	terminalInfo := i.GetTerminalInfo()

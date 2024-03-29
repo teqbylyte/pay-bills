@@ -1,6 +1,9 @@
 package services
 
-import "martpay/app/utils"
+import (
+	"martpay/app/request"
+	"martpay/app/utils"
+)
 
 type Spout struct {
 }
@@ -9,6 +12,9 @@ func (s Spout) GetName() string {
 	return "Spout"
 }
 
-func (s Spout) PurchaseAirtime(amount string, network string, phone string, reference string) utils.MyResponse {
-	return utils.MyResponse{}
+func (s Spout) PurchaseAirtime(txRef string, data request.NewTnxInterface) utils.MyResponse {
+	return utils.MyResponse{
+		Success: true,
+		Message: "",
+	}
 }

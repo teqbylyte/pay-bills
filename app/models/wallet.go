@@ -23,15 +23,15 @@ func (w Wallet) IsActive() bool {
 	return w.Status == enums.ACTIVE
 }
 
-func (w Wallet) AllowTransaction(amount float64, forDebit bool) error {
-	if w.IsActive() {
+// AllowsTransaction - Ensure wallet can perform transaction.
+func (w Wallet) AllowsTransaction(amount float64, forDebit bool, allowNegative bool) error {
+	fmt.Println(w.ID)
+	if !w.IsActive() {
 		return errors.New(fmt.Sprintf("Your wallet is %s", w.Status))
 	}
 
-	if forDebit {
-		if amount > w.Balance {
-			return errors.New("Insufficient balance")
-		}
+	if forDebit && !allowNegative && amount > w.Balance {
+		return errors.New("Insufficient balance")
 	}
 
 	return nil
