@@ -3,7 +3,7 @@ package helper
 import (
 	"fmt"
 	"github.com/thedevsaddam/govalidator"
-	"martpay/database"
+	"pay-bills/database"
 	"strings"
 )
 

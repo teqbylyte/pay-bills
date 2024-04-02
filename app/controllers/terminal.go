@@ -3,11 +3,11 @@ package ctrl
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	helper "martpay/app/helpers"
-	"martpay/app/request"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	helper "pay-bills/app/helpers"
+	"pay-bills/app/request"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 	"strings"
 )
 

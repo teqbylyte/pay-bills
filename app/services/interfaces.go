@@ -1,8 +1,8 @@
 package services
 
 import (
-	"martpay/app/request"
-	"martpay/app/utils"
+	"pay-bills/app/request"
+	"pay-bills/app/utils"
 )
 
 type ProviderFn func(txRef string, i request.NewTnxInterface) utils.MyResponse

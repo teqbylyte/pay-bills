@@ -2,8 +2,8 @@ package helper
 
 import (
 	"fmt"
-	"martpay/app/utils"
-	"martpay/database/query"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 	"time"
 )
 

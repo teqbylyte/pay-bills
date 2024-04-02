@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
-	"martpay/app/enums"
+	"pay-bills/app/enums"
 	"strings"
 	"time"
 )

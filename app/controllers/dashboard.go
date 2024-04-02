@@ -3,12 +3,12 @@ package ctrl
 import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gen"
-	"martpay/app/dto"
-	"martpay/app/enums"
-	"martpay/app/models"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	"pay-bills/app/dto"
+	"pay-bills/app/enums"
+	"pay-bills/app/models"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 func Dashboard(c echo.Context) error {

@@ -2,8 +2,8 @@ package services
 
 import (
 	"fmt"
-	"martpay/app/request"
-	"martpay/app/utils"
+	"pay-bills/app/request"
+	"pay-bills/app/utils"
 )
 
 type Spout struct {

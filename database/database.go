@@ -7,8 +7,8 @@ import (
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"log"
-	"martpay/app/models"
-	"martpay/database/query"
+	"pay-bills/app/models"
+	"pay-bills/database/query"
 )
 
 var Db *gorm.DB
@@ -50,7 +50,7 @@ func Connect() {
 	query.SetDefault(Db)
 
 	// Generate the code
-	g.Execute()
+	// g.Execute()
 }
 
 func postgresDsn() string {

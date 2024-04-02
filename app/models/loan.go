@@ -2,7 +2,7 @@ package model
 
 import (
 	"gorm.io/datatypes"
-	"martpay/app/enums"
+	"pay-bills/app/enums"
 )
 
 type Loan struct {

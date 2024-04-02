@@ -3,9 +3,9 @@ package model
 import (
 	"fmt"
 	"gorm.io/gorm"
-	"martpay/app/enums"
-	"martpay/app/request"
-	"martpay/app/utils"
+	"pay-bills/app/enums"
+	"pay-bills/app/request"
+	"pay-bills/app/utils"
 	"time"
 )
 

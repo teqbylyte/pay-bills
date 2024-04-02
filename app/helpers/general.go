@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"martpay/app/enums"
-	"martpay/app/models"
-	"martpay/app/utils"
-	"martpay/database/query"
+	"pay-bills/app/enums"
+	"pay-bills/app/models"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 // AuthTerminal - Get the terminal making the request from the deviceId set in the request header.

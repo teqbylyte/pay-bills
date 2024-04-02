@@ -10,7 +10,7 @@ The project is built on the Echo Framework
 2. Run the command `go get`
 3. Create a copy of the file .toml.example file and edit based on your needs. This file serves as your env.
 ```
-cp .martpay.toml.example .martpay.toml
+cp .pay-bills.toml.example .pay-bills.toml
 ```
 4. Run your app using air package if you have air installed - to install air, [click this link](https://github.com/cosmtrek/air)  or simple run the main file:
 ```

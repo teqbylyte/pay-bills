@@ -1,6 +1,6 @@
 package model
 
-import "martpay/app/enums"
+import "pay-bills/app/enums"
 
 type WalletTransaction struct {
 	BaseModel

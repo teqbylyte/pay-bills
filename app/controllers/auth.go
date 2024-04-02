@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
-	state "martpay/app/enums"
-	"martpay/app/models"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	state "pay-bills/app/enums"
+	"pay-bills/app/models"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 type LoginData struct {

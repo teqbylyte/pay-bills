@@ -2,8 +2,8 @@ package model
 
 import (
 	"gorm.io/datatypes"
-	"martpay/app/enums"
-	"martpay/app/request"
+	"pay-bills/app/enums"
+	"pay-bills/app/request"
 )
 
 type Transactions struct {

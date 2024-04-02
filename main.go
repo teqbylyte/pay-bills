@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-	config "martpay/app"
-	"martpay/app/helpers"
-	"martpay/database"
-	"martpay/routes"
+	config "pay-bills/app"
+	"pay-bills/app/helpers"
+	"pay-bills/database"
+	"pay-bills/routes"
 )
 
 func init() {

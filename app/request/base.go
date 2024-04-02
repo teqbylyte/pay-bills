@@ -2,8 +2,8 @@ package request
 
 import (
 	"github.com/thedevsaddam/govalidator"
-	"martpay/app/contracts"
-	"martpay/app/utils"
+	"pay-bills/app/contracts"
+	"pay-bills/app/utils"
 )
 
 // NewTnxInterface - This defines the methods that every request data which would create a new transaction should implement.

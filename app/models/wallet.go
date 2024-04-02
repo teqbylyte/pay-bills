@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/datatypes"
-	"martpay/app/enums"
+	"pay-bills/app/enums"
 )
 
 type Wallet struct {

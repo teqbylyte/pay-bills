@@ -3,10 +3,10 @@ package ctrl
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"martpay/app/models"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	"pay-bills/app/models"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 // Transactions - Get auth user transactions

@@ -2,10 +2,10 @@ package helper
 
 import (
 	"fmt"
-	"martpay/app/enums"
-	"martpay/app/models"
-	"martpay/database"
-	"martpay/database/query"
+	"pay-bills/app/enums"
+	"pay-bills/app/models"
+	"pay-bills/database"
+	"pay-bills/database/query"
 )
 
 func ProcessWalletDebit(

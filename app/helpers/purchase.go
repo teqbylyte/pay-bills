@@ -1,11 +1,11 @@
 package helper
 
 import (
-	"martpay/app/models"
-	"martpay/app/request"
-	"martpay/app/services"
-	"martpay/app/utils"
 	"net/http"
+	"pay-bills/app/models"
+	"pay-bills/app/request"
+	"pay-bills/app/services"
+	"pay-bills/app/utils"
 )
 
 // ProcessPurchase - Process the purchase for the specified service with the provider call.

@@ -1,4 +1,4 @@
-module martpay
+module pay-bills
 
 go 1.21.5
 

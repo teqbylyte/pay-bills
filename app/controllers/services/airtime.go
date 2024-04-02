@@ -3,13 +3,13 @@ package serviceCtrl
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"martpay/app/helpers"
-	"martpay/app/models"
-	"martpay/app/request"
-	"martpay/app/services"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	"pay-bills/app/helpers"
+	"pay-bills/app/models"
+	"pay-bills/app/request"
+	"pay-bills/app/services"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 func GetAirtimeNetworks(c echo.Context) error {

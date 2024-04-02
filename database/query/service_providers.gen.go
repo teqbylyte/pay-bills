@@ -6,7 +6,7 @@ package query
 
 import (
 	"context"
-	model "martpay/app/models"
+	model "pay-bills/app/models"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

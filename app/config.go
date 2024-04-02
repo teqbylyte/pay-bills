@@ -13,9 +13,9 @@ func Setup() {
 	configureTimezone()
 
 	viper.SetConfigType("toml")
-	viper.SetConfigName(".martpay")
+	viper.SetConfigName(".app")
 
-	//viper.AddConfigPath(fmt.Sprintf("%s/prod/martpay", homeDir))
+	//viper.AddConfigPath(fmt.Sprintf("%s/prod/pay-bills", homeDir))
 	viper.AddConfigPath("./")
 
 	// Find and read the config file

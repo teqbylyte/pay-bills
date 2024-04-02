@@ -6,9 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
-	ctrl "martpay/app/controllers"
-	serviceCtrl "martpay/app/controllers/services"
-	"martpay/database/query"
+	ctrl "pay-bills/app/controllers"
+	serviceCtrl "pay-bills/app/controllers/services"
+	"pay-bills/database/query"
 )
 
 func Api(e *echo.Echo) {

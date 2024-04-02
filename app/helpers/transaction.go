@@ -3,13 +3,13 @@ package helper
 import (
 	"errors"
 	"fmt"
-	"martpay/app/enums"
-	"martpay/app/models"
-	"martpay/app/request"
-	"martpay/app/services"
-	"martpay/app/utils"
-	"martpay/database/query"
 	"net/http"
+	"pay-bills/app/enums"
+	"pay-bills/app/models"
+	"pay-bills/app/request"
+	"pay-bills/app/services"
+	"pay-bills/app/utils"
+	"pay-bills/database/query"
 )
 
 func AllowTransaction(terminal *model.Terminal, data request.NewTnxInterface) (int, any) {

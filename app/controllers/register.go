@@ -3,13 +3,13 @@ package ctrl
 import (
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
-	helper "martpay/app/helpers"
-	"martpay/app/models"
-	"martpay/app/request"
-	"martpay/app/utils"
-	"martpay/database"
-	"martpay/database/query"
 	"net/http"
+	helper "pay-bills/app/helpers"
+	"pay-bills/app/models"
+	"pay-bills/app/request"
+	"pay-bills/app/utils"
+	"pay-bills/database"
+	"pay-bills/database/query"
 )
 
 func Register(c echo.Context) error {

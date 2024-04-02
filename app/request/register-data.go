@@ -3,7 +3,7 @@ package request
 import (
 	"fmt"
 	"github.com/thedevsaddam/govalidator"
-	"martpay/app/enums"
+	"pay-bills/app/enums"
 	"strings"
 )
 
