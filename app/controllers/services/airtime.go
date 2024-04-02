@@ -41,9 +41,8 @@ func PurchaseAirtime(c echo.Context) error {
 
 	reference := helper.NewTnxRef()
 	info := fmt.Sprintf("Airtime purchase of %v for %s", data.Amount, data.Network)
-	charge := 0.0 // TODO: Get charge from terminal group
 
-	transaction := model.NewPendingTransaction(terminal, service, data.Amount, data.Amount+charge, reference, info,
+	transaction := model.NewPendingTransaction(terminal, service, data.Amount, data.Amount, reference, info,
 		provider.GetName(), data.Phone, &data.TerminalInfo)
 	// Record transaction in the db.
 	_ = query.Transactions.Create(transaction)
